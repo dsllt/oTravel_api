@@ -7,6 +7,7 @@ import com.dsllt.oTravel_api.entity.user.UserRole;
 import com.dsllt.oTravel_api.repository.UserRepository;
 import com.dsllt.oTravel_api.service.exceptions.EmailAlreadyExistsException;
 import com.dsllt.oTravel_api.service.exceptions.ObjectNotFoundException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,20 +27,10 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(createUserDTO.email())){
             throw new EmailAlreadyExistsException("E-mail já cadastrado.");
         }
-        User newUser = User.builder()
-                .firstName(createUserDTO.firstName())
-                .lastName(createUserDTO.lastName())
-                .email(createUserDTO.email())
-                .passwordHash(createUserDTO.password())
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
+        User user = new User();
+        BeanUtils.copyProperties(createUserDTO, user);
 
-        User savedUser = userRepository.save(newUser);
-
-        if (savedUser == null) {
-            throw new RuntimeException("Failed to save user");
-        }
+        User savedUser = userRepository.save(user);
 
         return new UserDTO(savedUser.getId(), savedUser.getFirstName(), savedUser.getLastName(), savedUser.getEmail(), savedUser.getImage(), savedUser.getRole());
     }

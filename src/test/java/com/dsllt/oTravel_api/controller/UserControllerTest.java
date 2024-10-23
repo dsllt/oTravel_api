@@ -65,7 +65,7 @@ class UserControllerTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("john.doe@email.com")
-                .passwordHash("123456")
+                .password("123456")
                 .role(UserRole.USER)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -92,7 +92,7 @@ class UserControllerTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("john.doe@email.com")
-                .passwordHash("123456")
+                .password("123456")
                 .role(UserRole.USER)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -143,7 +143,7 @@ class UserControllerTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("john.doe@email.com")
-                .passwordHash("123456")
+                .password("123456")
                 .role(UserRole.USER)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -153,7 +153,7 @@ class UserControllerTest {
                 .firstName("Johnny")
                 .lastName("Doe")
                 .email("john.doe@email.com")
-                .passwordHash("123456")
+                .password("123456")
                 .role(UserRole.USER)
                 .createdAt(LocalDateTime.now())
                 .build();

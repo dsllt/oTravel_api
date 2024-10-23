@@ -21,15 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid CreateUserDTO createUserDTO, UriComponentsBuilder uriComponentsBuilder){
-        UserDTO newUser = userService.save(createUserDTO);
-
-        var uri = uriComponentsBuilder.path("/api/v1/user/{userUUID}").buildAndExpand(newUser.id()).toUri();
-
-        return ResponseEntity.created(uri).body(newUser);
-    }
-
     @GetMapping("/{userUUID}")
     public ResponseEntity<UserDTO> getUserById(@Nonnull @PathVariable UUID userUUID){
         UserDTO user = userService.getUserById(userUUID);

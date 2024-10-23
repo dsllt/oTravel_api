@@ -121,7 +121,7 @@ class UserServiceImplTest {
                 .role(UserRole.USER)
                 .email("doe@gmail.com")
                 .createdAt(LocalDateTime.now())
-                .passwordHash("123")
+                .password("123")
                 .image("")
                 .build();
 
@@ -140,7 +140,7 @@ class UserServiceImplTest {
                 .role(UserRole.USER)
                 .email(userUpdateDTO.email())
                 .createdAt(retrievedUser.getCreatedAt())
-                .passwordHash("123")
+                .password("123")
                 .image(userUpdateDTO.image())
                 .build();
 

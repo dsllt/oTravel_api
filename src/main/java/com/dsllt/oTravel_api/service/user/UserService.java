@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public interface UserService {
     UserDTO save(CreateUserDTO createUserDTO);
-
     UserDTO getUserById(UUID userUUID);
     UserDTO updateUser(UUID userUUID, CreateUserDTO createUserDTO);
 }

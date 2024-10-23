@@ -79,7 +79,7 @@ class ReviewServiceImplTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("joe@test.com")
-                .passwordHash("123456")
+                .password("123456")
                 .createdAt(LocalDateTime.now())
                 .build();
         Review repositorySavedReview = Review.builder()
@@ -198,7 +198,7 @@ class ReviewServiceImplTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("doe@email.com")
-                .passwordHash("123456")
+                .password("123456")
                 .createdAt(LocalDateTime.now())
                 .build();
         Review updatedReview = Review.builder()
