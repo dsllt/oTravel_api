@@ -7,12 +7,13 @@ import com.dsllt.oTravel_api.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,10 +31,14 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${api.security.token.secret}")
+    private String secret;
+
     @MockBean
     UserRepository userRepository;
 
-    @Test@DisplayName("should throw exception when trying to register a user with invalid data")
+    @Test
+    @DisplayName("should not allow to access /user directly and throw exception with status code 403")
     void testCreate() throws Exception {
         // Arrange
         String json = "{}";
@@ -46,44 +51,13 @@ class UserControllerTest {
         ).andReturn().getResponse();
 
         // Assert
-        assertEquals(400, response.getStatus());
+        assertEquals(403, response.getStatus());
     }
 
-    @Test@DisplayName("should create user")
-    void testCreate2() throws Exception {
-        // Arrange
-        String json = """
-                {
-                	"email": "john.doe@email.com",
-                	"password": "123456",
-                	"firstName": "John",
-                	"lastName": "Doe"
-                }
-                """;
-        User mockUser = User.builder()
-                .id(UUID.randomUUID())
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@email.com")
-                .password("123456")
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
 
-        when(userRepository.save(any(User.class))).thenReturn(mockUser);
-
-        // Act
-        var response = mockMvc.perform(
-                post("/api/v1/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
-        ).andReturn().getResponse();
-
-        // Assert
-        assertEquals(201, response.getStatus());
-    }
-
-    @Test@DisplayName("should get user by id")
+    @Test
+    @DisplayName("should allow to retrieve user data by id if authorization header is provided")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testGetById() throws Exception{
         // Arrange
         UUID userUuid = UUID.randomUUID();
@@ -98,7 +72,6 @@ class UserControllerTest {
                 .build();
         when(userRepository.findById(userUuid)).thenReturn(Optional.ofNullable(mockUser));
 
-
         // Act
         var response = mockMvc.perform(
                 get("/api/v1/user/" + userUuid)
@@ -111,6 +84,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("should throw error when searching user by invalid id")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testGetById2() throws Exception {
         // Arrange
         String userUuid = "1";
@@ -126,7 +100,9 @@ class UserControllerTest {
         assertEquals(400, response.getStatus());
     }
 
-    @Test@DisplayName("should update user")
+    @Test
+    @DisplayName("should update user")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testUpdate() throws Exception {
         // Arrange
         UUID userUuid = UUID.randomUUID();
