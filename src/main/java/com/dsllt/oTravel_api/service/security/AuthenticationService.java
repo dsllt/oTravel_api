@@ -29,6 +29,7 @@ public class AuthenticationService {
 
         return userService.save(userCreateDTO);
     }
+
     public LoginResponseDTO login(AuthenticationDTO authenticationDTO) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.email(), authenticationDTO.password());
         var auth = authenticationManager.authenticate(usernamePassword);
