@@ -6,6 +6,7 @@ import com.dsllt.oTravel_api.entity.review.Review;
 import com.dsllt.oTravel_api.service.review.ReviewService;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,16 +18,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/review")
 public class ReviewController {
+    private final ReviewService reviewService;
 
-    private ReviewService reviewService;
-
-    public ReviewController(ReviewService reviewServiceImpl){
-        this.reviewService = reviewServiceImpl;
+    @Autowired
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
     }
 
     @PostMapping
     public ResponseEntity<ReviewDTO> create(@RequestBody @Valid CreateReviewDTO createReviewDTO, UriComponentsBuilder uriComponentsBuilder){
         Review savedReview = reviewService.save(createReviewDTO);
+        System.out.println("VEM DE ID "+savedReview.getId());
 
         var uri = uriComponentsBuilder.path("/api/v1/review/{reviewUuid}").buildAndExpand(savedReview.getId()).toUri();
 

@@ -1,9 +1,11 @@
 package com.dsllt.oTravel_api.service.place;
 
+import com.dsllt.oTravel_api.dtos.CustomPageDTO;
 import com.dsllt.oTravel_api.dtos.enums.PlaceCategory;
 import com.dsllt.oTravel_api.dtos.place.CreatePlaceDTO;
 import com.dsllt.oTravel_api.dtos.place.PlaceDTO;
 import com.dsllt.oTravel_api.entity.place.Place;
+import com.dsllt.oTravel_api.entity.place.PlaceFilter;
 import com.dsllt.oTravel_api.repository.PlaceRepository;
 import com.dsllt.oTravel_api.service.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.service.exceptions.PlaceAlreadyExistsException;
@@ -16,6 +18,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -152,6 +156,7 @@ class PlaceServiceImplTest {
         // Arrange
         Place place = new Place();
         List<Place> placeList = Arrays.asList(place);
+
         when(placeRepository.findAll()).thenReturn(placeList);
 
         // Act
@@ -162,6 +167,34 @@ class PlaceServiceImplTest {
         assertThat(retrievedPlaces).isInstanceOf(List.class);
         assertThat(retrievedPlaces.get(0)).isInstanceOf(PlaceDTO.class);
         assertThat(retrievedPlaces).allMatch(Objects::nonNull);
+    }
+
+    @Test
+    @DisplayName("should return a paginated list of places")
+    public void getPlacePaginatedTest(){
+        // Arrange
+        Place place = new Place();
+        List<Place> placeList = Arrays.asList(place);
+        PlaceFilter placeFilter = new PlaceFilter(UUID.randomUUID(),"","","",List.of(),"",0.0);
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+        Page<Place> paginatedPlaces = new PageImpl<>(placeList, pageable, placeList.size());
+
+        when(placeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(paginatedPlaces);
+
+        // Act
+        CustomPageDTO<PlaceDTO> retrievedPlaces = placeServiceImpl.filter(placeFilter, pageable);
+
+        // Assert
+        assertThat(retrievedPlaces).isNotNull();
+        assertThat(retrievedPlaces.getTotalPages()).isEqualTo(1);
+        assertThat(retrievedPlaces.getTotalElements()).isEqualTo(1);
+        assertThat(retrievedPlaces.getContent()).isNotEmpty();
+        assertThat(retrievedPlaces.getContent().get(0)).isInstanceOf(PlaceDTO.class);
+        assertThat(retrievedPlaces.getNumber()).isEqualTo(0);
+        assertThat(retrievedPlaces.getNumberOfElements()).isEqualTo(1);
+        assertThat(retrievedPlaces.isFirst()).isTrue();
+        assertThat(retrievedPlaces.isLast()).isTrue();
     }
 
     @Test

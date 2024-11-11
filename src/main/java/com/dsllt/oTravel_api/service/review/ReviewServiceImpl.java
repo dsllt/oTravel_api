@@ -1,21 +1,27 @@
 package com.dsllt.oTravel_api.service.review;
 
+import com.dsllt.oTravel_api.dtos.CustomPageDTO;
 import com.dsllt.oTravel_api.dtos.review.CreateReviewDTO;
-import com.dsllt.oTravel_api.dtos.review.ReviewDTO;
 import com.dsllt.oTravel_api.entity.place.Place;
 import com.dsllt.oTravel_api.entity.review.Review;
+import com.dsllt.oTravel_api.entity.review.ReviewFilter;
+import com.dsllt.oTravel_api.entity.review.ReviewSpecification;
 import com.dsllt.oTravel_api.entity.user.User;
 import com.dsllt.oTravel_api.repository.PlaceRepository;
 import com.dsllt.oTravel_api.repository.ReviewRepository;
 import com.dsllt.oTravel_api.repository.UserRepository;
 import com.dsllt.oTravel_api.service.exceptions.ObjectNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
+
     private ReviewRepository reviewRepository;
     private PlaceRepository placeRepository;
     private UserRepository userRepository;
@@ -32,8 +38,7 @@ public class ReviewServiceImpl implements ReviewService{
         User retrievedUser = userRepository.findById(UUID.fromString(createReviewDTO.userId())).orElseThrow(() -> new ObjectNotFoundException("User not found"));
 
         Review newReview = new Review(createReviewDTO, retrievedUser, retrievedPlace);
-        Review savedReview = reviewRepository.save(newReview);
-        return savedReview;
+        return reviewRepository.save(newReview);
     }
 
     @Override
@@ -70,4 +75,25 @@ public class ReviewServiceImpl implements ReviewService{
     public void deleteReview(UUID reviewUuid) {
         reviewRepository.deleteById(reviewUuid);
     }
+
+    @Override
+    public CustomPageDTO<Review> filter(ReviewFilter reviewFilter, Pageable pageable) {
+        Page<Review> reviewsPage = reviewRepository.findAll(ReviewSpecification.withFilter(reviewFilter), pageable);
+        List<Review> reviewsContent = reviewsPage.getContent()
+                .stream()
+                .toList();
+
+        return new CustomPageDTO<>(
+                reviewsPage.getTotalPages(),
+                reviewsPage.getTotalElements(),
+                reviewsContent,
+                reviewsPage.getNumber(),
+                reviewsPage.getNumberOfElements(),
+                reviewsPage.isFirst(),
+                reviewsPage.isLast()
+        );
+
+    }
+
+
 }

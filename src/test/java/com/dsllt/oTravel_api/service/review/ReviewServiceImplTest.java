@@ -51,7 +51,8 @@ class ReviewServiceImplTest {
         this.reviewService = new ReviewServiceImpl(reviewRepository, placeRepository, userRepository);
     }
 
-    @Test@DisplayName("should save review")
+    @Test
+    @DisplayName("should save review")
     public void saveReviewTest() {
         // Arrange
         UUID placeId = UUID.randomUUID();
@@ -106,7 +107,8 @@ class ReviewServiceImplTest {
         verify(reviewRepository, times(1)).save(reviewArgumentCaptor.capture());
     }
 
-    @Test@DisplayName("should retrieve all reviews")
+    @Test
+    @DisplayName("should retrieve all reviews")
     public void getReviewsTest() {
         // Arrange
         Review review = new Review();
@@ -123,7 +125,26 @@ class ReviewServiceImplTest {
         assertThat(retrievedReviews).allMatch(Objects::nonNull);
     }
 
-    @Test@DisplayName("should retrieve review by id")
+    @Test
+    @DisplayName("should retrieve paginated list of reviews")
+    public void getReviewsPaginatedTest() {
+        // Arrange
+        Review review = new Review();
+        List<Review> reviewList = Arrays.asList(review);
+        when(reviewRepository.findAll()).thenReturn(reviewList);
+
+        // Act
+        List<Review> retrievedReviews = reviewService.get();
+
+        // Assert
+        assertThat(retrievedReviews).isNotEmpty();
+        assertThat(retrievedReviews).isInstanceOf(List.class);
+        assertThat(retrievedReviews.get(0)).isInstanceOf(Review.class);
+        assertThat(retrievedReviews).allMatch(Objects::nonNull);
+    }
+
+    @Test
+    @DisplayName("should retrieve review by id")
     public void getReviewByIdTest() {
         // Arrange
         UUID reviewUuid = UUID.randomUUID();
@@ -151,7 +172,8 @@ class ReviewServiceImplTest {
         assertThat(retrievedReview.getCreatedAt()).isEqualTo(savedReview.getCreatedAt());
     }
 
-    @Test@DisplayName("should throw ObjectNotFoundException when receiving non-existing id")
+    @Test
+    @DisplayName("should throw ObjectNotFoundException when receiving non-existing id")
     public void getReviewByIdErrorTest() {
         // Arrange
         UUID reviewUuid = UUID.randomUUID();
@@ -161,7 +183,8 @@ class ReviewServiceImplTest {
         assertThrows(ObjectNotFoundException.class, () -> reviewService.getReviewById(reviewUuid));
     }
 
-    @Test@DisplayName("should update review")
+    @Test
+    @DisplayName("should update review")
     public void updateReviewTest() {
         // Arrange
         UUID reviewUuid = UUID.randomUUID();
