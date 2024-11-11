@@ -3,6 +3,7 @@ package com.dsllt.oTravel_api.controller.exceptions;
 import com.dsllt.oTravel_api.service.exceptions.EmailAlreadyExistsException;
 import com.dsllt.oTravel_api.service.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.service.exceptions.PlaceAlreadyExistsException;
+import com.dsllt.oTravel_api.service.exceptions.TokenVerificationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,18 @@ public class ControllerExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         StandardError err = new StandardError(Instant.now(), status.value(), "Erro na validação dos valores recebidos.", e.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(TokenVerificationException.class)
+    public ResponseEntity<StandardError> handleTokenVerificationException(TokenVerificationException e,
+                                                                          HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        StandardError err = new StandardError(Instant.now(), status.value(), "Erro ao verificar token.", e.getMessage(),
                 request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
