@@ -36,7 +36,10 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.POST, "/api/v1/reset-password/send").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/v1/reset-password/reset").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/v1/review").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/api/v1/review/{id}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/v1/review/{id}").permitAll()                            .requestMatchers(HttpMethod.GET, "/api/v1/review").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/v1/place").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/v1/place/{id}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/v1/place/filter").permitAll()
                             .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })

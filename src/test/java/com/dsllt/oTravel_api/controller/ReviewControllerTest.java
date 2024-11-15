@@ -42,7 +42,6 @@ class ReviewControllerTest {
     ReviewRepository reviewRepository;
 
 
-
     @Test
     @DisplayName("should throw exception when trying to register without authorization")
     void testCreateWithoutAuth() throws Exception {

@@ -9,6 +9,7 @@ import com.dsllt.oTravel_api.entity.place.PlaceFilter;
 import com.dsllt.oTravel_api.service.place.PlaceService;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,8 +24,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/place")
 public class PlaceController {
 
-    private PlaceService placeService;
+    private final PlaceService placeService;
 
+    @Autowired
     public PlaceController(PlaceService placeService){
         this.placeService = placeService;
     }

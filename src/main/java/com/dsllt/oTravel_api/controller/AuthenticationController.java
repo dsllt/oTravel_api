@@ -18,8 +18,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
+    private final AuthenticationService authenticationService;
+
     @Autowired
-    private AuthenticationService authenticationService;
+    public AuthenticationController(AuthenticationService authenticationService){
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authenticationDTO){

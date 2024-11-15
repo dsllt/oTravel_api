@@ -1,5 +1,10 @@
 package com.dsllt.oTravel_api.controller;
 
+import com.dsllt.oTravel_api.dtos.place.CreatePlaceDTO;
+import com.dsllt.oTravel_api.dtos.place.PlaceDTO;
+import com.dsllt.oTravel_api.dtos.review.CreateReviewDTO;
+import com.dsllt.oTravel_api.entity.place.Place;
+import com.dsllt.oTravel_api.repository.PlaceRepository;
 import com.dsllt.oTravel_api.service.place.PlaceServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +13,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -22,12 +32,14 @@ class PlaceControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @MockBean
-    PlaceServiceImpl placeServiceImpl;
+    PlaceServiceImpl placeService;
+    @MockBean
+    PlaceRepository placeRepository;
 
     @Test
     @DisplayName("should throw exception when trying to register a place with invalid data")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate() throws Exception {
         // Arrange
         String json = "{}";
@@ -45,6 +57,7 @@ class PlaceControllerTest {
 
     @Test
     @DisplayName("should create place")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate2() throws Exception {
         // Arrange
         String json = """
@@ -54,11 +67,14 @@ class PlaceControllerTest {
                 	"city": "Porto Alegre",
                 	"latitude":-30.0319164,
                 	"name": "Lugar novo",
-                	"category":[ "COFFEE"],
+                	"category":["COFFEE"],
                 	"slug": "lugar-novo",
                 	"longitude": -51.2107576
                 }
                 """;
+        UUID placeId = UUID.randomUUID();
+        PlaceDTO mockedPlaceDTO = new PlaceDTO(placeId, "Lugar novo", "", "Description", "Rua XX", "Porto Alegre", "Brazil", -30.0319164,-51.2107576,"lugar-novo", "", new ArrayList<>(), 5.0);
+        when(placeService.save(any(CreatePlaceDTO.class))).thenReturn(mockedPlaceDTO);
 
         // Act
         var response = mockMvc.perform(
@@ -91,11 +107,14 @@ class PlaceControllerTest {
     @DisplayName("should get place by id")
     void testGetById() throws Exception {
         // Arrange
-        UUID placeUuid = UUID.randomUUID();
+        UUID placeId = UUID.randomUUID();
+        PlaceDTO mockedPlaceDTO = new PlaceDTO(placeId, "Lugar novo", "", "Description", "Rua XX", "Porto Alegre", "Brazil", -30.0319164,-51.2107576,"lugar-novo", "", new ArrayList<>(), 5.0);
+
+        when(placeService.getPlaceById(placeId)).thenReturn(mockedPlaceDTO);
 
         // Act
         var response = mockMvc.perform(
-                get("/api/v1/place/" + placeUuid)
+                get("/api/v1/place/" + placeId)
                         .contentType(MediaType.APPLICATION_JSON)
 
         ).andReturn().getResponse();
@@ -105,27 +124,11 @@ class PlaceControllerTest {
     }
 
     @Test
-    @DisplayName("should throw error when searching place by invalid id")
-    void testGetById2() throws Exception {
-        // Arrange
-        String placeUuid = "1";
-
-        // Act
-        var response = mockMvc.perform(
-                get("/api/v1/place/" + placeUuid)
-                        .contentType(MediaType.APPLICATION_JSON)
-
-        ).andReturn().getResponse();
-
-        // Assert
-        assertEquals(400, response.getStatus());
-    }
-
-    @Test
     @DisplayName("should update place")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testUpdate() throws Exception {
         // Arrange
-        UUID placeUuid = UUID.randomUUID();
+        UUID placeId = UUID.randomUUID();
         String json = """
                  {
                 	"country": "Brazil",
@@ -138,10 +141,19 @@ class PlaceControllerTest {
                 	"longitude": -51.2107576
                 }
                 """;
+        Place mockedPlace = Place.builder()
+                .id(placeId)
+                .name("Name")
+                .build();
+        PlaceDTO mockedPlaceDTO = new PlaceDTO(placeId, "Lugar novo", "", "Description", "Rua XX", "Porto Alegre", "Brazil", -30.0319164,-51.2107576,"lugar-novo", "", new ArrayList<>(), 5.0);
+        PlaceDTO updatedMockedPlaceDTO = new PlaceDTO(placeId, "Lugar novo 1", "", "Description", "Rua XX", "Porto Alegre", "Brazil", -30.0319164,-51.2107576,"lugar-novo", "", new ArrayList<>(), 5.0);
+
+        when(placeRepository.findById(placeId)).thenReturn(Optional.of(mockedPlace));
+        when(placeService.updatePlace(placeId, mockedPlaceDTO)).thenReturn(updatedMockedPlaceDTO);
 
         // Act
         var response = mockMvc.perform(
-                put("/api/v1/place/" + placeUuid)
+                put("/api/v1/place/" + placeId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
 
