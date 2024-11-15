@@ -1,5 +1,6 @@
 package com.dsllt.oTravel_api.entity.user;
 
+import com.dsllt.oTravel_api.dtos.user.CreateUserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,5 +48,16 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public static User createNewUserFromCreateUserDTO(CreateUserDTO createUserDTO){
+        User user = new User();
+        user.setFirstName(createUserDTO.firstName());
+        user.setLastName(createUserDTO.lastName());
+        user.setEmail(createUserDTO.email());
+        user.setPassword(createUserDTO.password());
+        user.setImage(createUserDTO.image());
+        user.setRole(UserRole.USER);
+        return user;
     }
 }

@@ -35,6 +35,8 @@ public class Place {
     private Double longitude;
     private String slug;
     private String phone;
+    @Convert(converter = PlaceCategoryArrayConverter.class)
+    @Column(name = "category", columnDefinition = "place_category[]")
     private List<PlaceCategory> category;
     private Double rating;
     @Column(name = "created_at")

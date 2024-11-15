@@ -27,8 +27,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(createUserDTO.email())){
             throw new EmailAlreadyExistsException("E-mail já cadastrado.");
         }
-        User user = new User();
-        BeanUtils.copyProperties(createUserDTO, user);
+        User user = User.createNewUserFromCreateUserDTO(createUserDTO);
 
         User savedUser = userRepository.save(user);
 
