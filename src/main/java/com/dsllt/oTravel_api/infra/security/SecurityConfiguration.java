@@ -1,6 +1,6 @@
 package com.dsllt.oTravel_api.infra.security;
 
-import com.dsllt.oTravel_api.service.security.SecurityFilter;
+import com.dsllt.oTravel_api.core.usecase.security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

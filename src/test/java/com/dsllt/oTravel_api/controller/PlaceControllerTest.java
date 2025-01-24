@@ -1,11 +1,10 @@
 package com.dsllt.oTravel_api.controller;
 
-import com.dsllt.oTravel_api.dtos.place.CreatePlaceDTO;
-import com.dsllt.oTravel_api.dtos.place.PlaceDTO;
-import com.dsllt.oTravel_api.dtos.review.CreateReviewDTO;
-import com.dsllt.oTravel_api.entity.place.Place;
-import com.dsllt.oTravel_api.repository.PlaceRepository;
-import com.dsllt.oTravel_api.service.place.PlaceServiceImpl;
+import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
+import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
+import com.dsllt.oTravel_api.core.entity.place.Place;
+import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
+import com.dsllt.oTravel_api.core.usecase.place.PlaceServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
