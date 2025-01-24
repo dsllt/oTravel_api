@@ -1,6 +1,6 @@
 package com.dsllt.oTravel_api.usecase.user;
 
-import com.dsllt.oTravel_api.core.usecase.user.UserServiceImpl;
+import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
 import com.dsllt.oTravel_api.core.entity.user.User;
@@ -33,14 +33,14 @@ import java.util.UUID;
 class UserServiceImplTest {
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserService userService;
     @Mock
     UserRepository userRepository;
 
     @BeforeEach
     public void setup()
     {
-        this.userService = new UserServiceImpl(userRepository);
+        this.userService = new UserService(userRepository);
     }
 
     @Test

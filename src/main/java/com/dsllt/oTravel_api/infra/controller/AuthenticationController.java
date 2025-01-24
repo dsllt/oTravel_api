@@ -4,7 +4,7 @@ import com.dsllt.oTravel_api.infra.dto.LoginResponseDTO;
 import com.dsllt.oTravel_api.infra.dto.authentication.AuthenticationDTO;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
-import com.dsllt.oTravel_api.core.usecase.security.AuthenticationService;
+import com.dsllt.oTravel_api.infra.security.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

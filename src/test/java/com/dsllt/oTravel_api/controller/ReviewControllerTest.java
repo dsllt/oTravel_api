@@ -7,7 +7,7 @@ import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import com.dsllt.oTravel_api.infra.repository.ReviewRepository;
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
-import com.dsllt.oTravel_api.core.usecase.review.ReviewServiceImpl;
+import com.dsllt.oTravel_api.core.usecase.ReviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ class ReviewControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    ReviewServiceImpl reviewService;
+    ReviewService reviewService;
     @MockBean
     PlaceRepository placeRepository;
     @MockBean

@@ -1,6 +1,6 @@
 package com.dsllt.oTravel_api.usecase.review;
 
-import com.dsllt.oTravel_api.core.usecase.review.ReviewServiceImpl;
+import com.dsllt.oTravel_api.core.usecase.ReviewService;
 import com.dsllt.oTravel_api.infra.dto.review.CreateReviewDTO;
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.review.Review;
@@ -42,14 +42,14 @@ class ReviewServiceImplTest {
     private PlaceRepository placeRepository;
 
     @InjectMocks
-    ReviewServiceImpl reviewService;
+    ReviewService reviewService;
 
     @Captor
     private ArgumentCaptor<Review> reviewArgumentCaptor;
 
     @BeforeEach
     public void setup(){
-        this.reviewService = new ReviewServiceImpl(reviewRepository, placeRepository, userRepository);
+        this.reviewService = new ReviewService(reviewRepository, placeRepository, userRepository);
     }
 
     @Test

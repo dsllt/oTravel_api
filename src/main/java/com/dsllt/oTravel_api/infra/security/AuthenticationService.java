@@ -1,12 +1,12 @@
-package com.dsllt.oTravel_api.core.usecase.security;
+package com.dsllt.oTravel_api.infra.security;
 
-import com.dsllt.oTravel_api.core.usecase.user.UserService;
-import com.dsllt.oTravel_api.infra.dto.LoginResponseDTO;
+import com.dsllt.oTravel_api.core.exceptions.TokenVerificationException;
+import com.dsllt.oTravel_api.core.usecase.UserService;
+import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.infra.dto.authentication.AuthenticationDTO;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
+import com.dsllt.oTravel_api.infra.dto.LoginResponseDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
-import com.dsllt.oTravel_api.core.entity.user.User;
-import com.dsllt.oTravel_api.core.exceptions.TokenVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
-
 
     @Autowired
     private AuthenticationManager authenticationManager;

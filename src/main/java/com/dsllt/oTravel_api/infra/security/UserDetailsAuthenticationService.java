@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.usecase.security;
+package com.dsllt.oTravel_api.infra.security;
 
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

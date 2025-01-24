@@ -2,7 +2,6 @@ package com.dsllt.oTravel_api.infra.controller;
 
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
-import com.dsllt.oTravel_api.core.usecase.user.UserService;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.usecase.security;
+package com.dsllt.oTravel_api.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

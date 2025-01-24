@@ -1,9 +1,9 @@
 package com.dsllt.oTravel_api.infra.controller;
 
+import com.dsllt.oTravel_api.core.usecase.ReviewService;
 import com.dsllt.oTravel_api.infra.dto.review.CreateReviewDTO;
 import com.dsllt.oTravel_api.infra.dto.review.ReviewDTO;
 import com.dsllt.oTravel_api.core.entity.review.Review;
-import com.dsllt.oTravel_api.core.usecase.review.ReviewService;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

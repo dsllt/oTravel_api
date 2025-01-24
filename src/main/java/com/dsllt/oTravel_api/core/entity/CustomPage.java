@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.infra.dto;
+package com.dsllt.oTravel_api.core.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomPageDTO<T> {
+public class CustomPage<T> {
     private int totalPages;
     private long totalElements;
     private List<T> content;

@@ -1,7 +1,7 @@
 package com.dsllt.oTravel_api.usecase.place;
 
-import com.dsllt.oTravel_api.core.usecase.place.PlaceServiceImpl;
-import com.dsllt.oTravel_api.infra.dto.CustomPageDTO;
+import com.dsllt.oTravel_api.core.usecase.PlaceService;
+import com.dsllt.oTravel_api.core.entity.CustomPage;
 import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
 import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
 import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
@@ -39,14 +39,14 @@ class PlaceServiceImplTest {
     PlaceRepository placeRepository;
 
     @InjectMocks
-    PlaceServiceImpl placeServiceImpl;
+    PlaceService placeServiceImpl;
 
     @Captor
     private ArgumentCaptor<Place> placeArgumentCaptor;
 
     @BeforeEach
     public void setup(){
-        this.placeServiceImpl = new PlaceServiceImpl(placeRepository);
+        this.placeServiceImpl = new PlaceService(placeRepository);
     }
 
     @Test
@@ -184,7 +184,7 @@ class PlaceServiceImplTest {
         when(placeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(paginatedPlaces);
 
         // Act
-        CustomPageDTO<PlaceDTO> retrievedPlaces = placeServiceImpl.filter(placeFilter, pageable);
+        CustomPage<PlaceDTO> retrievedPlaces = placeServiceImpl.filter(placeFilter, pageable);
 
         // Assert
         assertThat(retrievedPlaces).isNotNull();

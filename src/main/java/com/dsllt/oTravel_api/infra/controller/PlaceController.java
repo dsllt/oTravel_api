@@ -1,11 +1,11 @@
 package com.dsllt.oTravel_api.infra.controller;
 
-import com.dsllt.oTravel_api.infra.dto.CustomPageDTO;
+import com.dsllt.oTravel_api.core.usecase.PlaceService;
+import com.dsllt.oTravel_api.core.entity.CustomPage;
 import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
 import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
 import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
 import com.dsllt.oTravel_api.core.entity.place.PlaceFilter;
-import com.dsllt.oTravel_api.core.usecase.place.PlaceService;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class PlaceController {
     }
 
     @GetMapping("/filter")
-    public  ResponseEntity<CustomPageDTO<PlaceDTO>> filter(
+    public  ResponseEntity<CustomPage<PlaceDTO>> filter(
             @RequestParam(required = false) UUID placeUuid,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String city,
@@ -75,7 +75,7 @@ public class PlaceController {
 
         PlaceFilter placeFilter = new PlaceFilter(placeUuid, name, city, country, category, slug, rating);
 
-        CustomPageDTO<PlaceDTO> places = placeService.filter(placeFilter, pageable);
+        CustomPage<PlaceDTO> places = placeService.filter(placeFilter, pageable);
 
         return ResponseEntity.ok().body(places);
     }

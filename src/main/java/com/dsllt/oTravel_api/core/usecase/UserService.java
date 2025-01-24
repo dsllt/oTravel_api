@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.usecase.user;
+package com.dsllt.oTravel_api.core.usecase;
 
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserService implements UserService {
 
     private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository){
+    public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
