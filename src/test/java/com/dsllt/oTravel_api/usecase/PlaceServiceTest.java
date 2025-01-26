@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.usecase.place;
+package com.dsllt.oTravel_api.usecase;
 
 import com.dsllt.oTravel_api.core.usecase.PlaceService;
 import com.dsllt.oTravel_api.core.entity.CustomPage;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class PlaceServiceImplTest {
+class PlaceServiceTest {
     @Mock
     PlaceRepository placeRepository;
 

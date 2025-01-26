@@ -23,14 +23,11 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
     private String description;
     private Double rating;
-
     @ManyToOne
     @JoinColumn(name = "place_id", referencedColumnName = "id")
     private Place place;
-
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

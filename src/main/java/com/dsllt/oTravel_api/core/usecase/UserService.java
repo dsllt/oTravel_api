@@ -6,20 +6,17 @@ import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
 import com.dsllt.oTravel_api.core.exceptions.EmailAlreadyExistsException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public class UserService implements UserService {
+@AllArgsConstructor
+public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
-
-    @Override
     public UserDTO save(CreateUserDTO createUserDTO) {
         if(userRepository.existsByEmail(createUserDTO.email())){
             throw new EmailAlreadyExistsException("E-mail já cadastrado.");
@@ -31,14 +28,14 @@ public class UserService implements UserService {
         return new UserDTO(savedUser.getId(), savedUser.getFirstName(), savedUser.getLastName(), savedUser.getEmail(), savedUser.getImage(), savedUser.getRole());
     }
 
-    @Override
+
     public UserDTO getUserById(UUID userUUID) {
         User user = userRepository.findById(userUUID).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
 
         return mapUserToUserDTO(user);
     }
 
-    @Override
+
     public UserDTO updateUser(UUID userUUID, CreateUserDTO updateUserDTO) {
         User retrievedUser = findUserById(userUUID);
         User updatedUser = updateUser(retrievedUser, updateUserDTO);

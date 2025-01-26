@@ -1,5 +1,6 @@
 package com.dsllt.oTravel_api.infra.controller;
 
+import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
 import jakarta.annotation.Nonnull;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;

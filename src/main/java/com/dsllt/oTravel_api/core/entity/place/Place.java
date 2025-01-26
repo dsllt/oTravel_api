@@ -23,7 +23,6 @@ public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String name;
     @Column(name = "image_url")
     private String imageUrl;

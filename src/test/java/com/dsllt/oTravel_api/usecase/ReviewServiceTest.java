@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.usecase.review;
+package com.dsllt.oTravel_api.usecase;
 
 import com.dsllt.oTravel_api.core.usecase.ReviewService;
 import com.dsllt.oTravel_api.infra.dto.review.CreateReviewDTO;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class ReviewServiceImplTest {
+class ReviewServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;

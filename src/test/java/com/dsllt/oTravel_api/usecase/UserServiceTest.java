@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.usecase.user;
+package com.dsllt.oTravel_api.usecase;
 
 import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
@@ -30,7 +30,7 @@ import java.util.UUID;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserServiceTest {
 
     @InjectMocks
     UserService userService;

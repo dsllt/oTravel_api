@@ -1,5 +1,6 @@
 package com.dsllt.oTravel_api.controller;
 
+import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.LoginResponseDTO;
 import com.dsllt.oTravel_api.infra.dto.authentication.AuthenticationDTO;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
