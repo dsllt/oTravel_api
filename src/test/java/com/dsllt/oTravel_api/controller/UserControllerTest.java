@@ -1,9 +1,9 @@
 package com.dsllt.oTravel_api.controller;
 
 
-import com.dsllt.oTravel_api.entity.user.User;
-import com.dsllt.oTravel_api.entity.user.UserRole;
-import com.dsllt.oTravel_api.repository.UserRepository;
+import com.dsllt.oTravel_api.core.entity.user.User;
+import com.dsllt.oTravel_api.core.entity.user.UserRole;
+import com.dsllt.oTravel_api.infra.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

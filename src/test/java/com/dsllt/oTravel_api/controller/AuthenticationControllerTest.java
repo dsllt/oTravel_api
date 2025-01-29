@@ -1,13 +1,12 @@
 package com.dsllt.oTravel_api.controller;
 
-import com.dsllt.oTravel_api.dtos.LoginResponseDTO;
-import com.dsllt.oTravel_api.dtos.authentication.AuthenticationDTO;
-import com.dsllt.oTravel_api.dtos.user.CreateUserDTO;
-import com.dsllt.oTravel_api.dtos.user.UserDTO;
-import com.dsllt.oTravel_api.entity.user.User;
-import com.dsllt.oTravel_api.entity.user.UserRole;
-import com.dsllt.oTravel_api.service.security.AuthenticationService;
-import com.dsllt.oTravel_api.service.user.UserService;
+import com.dsllt.oTravel_api.core.usecase.UserService;
+import com.dsllt.oTravel_api.infra.dto.LoginResponseDTO;
+import com.dsllt.oTravel_api.infra.dto.authentication.AuthenticationDTO;
+import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
+import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
+import com.dsllt.oTravel_api.core.entity.user.UserRole;
+import com.dsllt.oTravel_api.infra.security.AuthenticationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
