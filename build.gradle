@@ -50,6 +50,10 @@ tasks.named('test') {
 	finalizedBy jacocoTestReport
 }
 
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << '-parameters'
+}
+
 jacocoTestReport {
 	dependsOn test
 	reports {
