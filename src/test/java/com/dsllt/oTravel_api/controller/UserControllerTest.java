@@ -1,27 +1,26 @@
 package com.dsllt.oTravel_api.controller;
 
 
-import com.dsllt.oTravel_api.core.entity.user.User;
-import com.dsllt.oTravel_api.core.entity.user.UserRole;
+import com.dsllt.oTravel_api.core.usecase.FavoriteService;
+import com.dsllt.oTravel_api.core.usecase.PlaceService;
+import com.dsllt.oTravel_api.core.usecase.UserService;
+import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
+import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -34,8 +33,24 @@ class UserControllerTest {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    @MockBean
+    @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    private FavoriteService favoriteService;
+    @Autowired
+    private PlaceService placeService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+    }
 
     @Test
     @DisplayName("should not allow to access /user directly and throw exception with status code 403")
@@ -60,21 +75,12 @@ class UserControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testGetById() throws Exception{
         // Arrange
-        UUID userUuid = UUID.randomUUID();
-        User mockUser = User.builder()
-                .id(userUuid)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@email.com")
-                .password("123456")
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
-        when(userRepository.findById(userUuid)).thenReturn(Optional.ofNullable(mockUser));
+        CreateUserDTO createTestUser = new CreateUserDTO("John", "Doe", "jeohndoe@email.com", "","123456");
+        UserDTO testUser = userService.save(createTestUser);
 
         // Act
         var response = mockMvc.perform(
-                get("/api/v1/user/" + userUuid)
+                get("/api/v1/user/" + testUser.id())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
 
@@ -105,7 +111,6 @@ class UserControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testUpdate() throws Exception {
         // Arrange
-        UUID userUuid = UUID.randomUUID();
         String json = """
                 {
                 	"email": "john.doe@email.com",
@@ -114,30 +119,12 @@ class UserControllerTest {
                 	"lastName": "Doe"
                 }
                 """;
-        User mockUser = User.builder()
-                .id(userUuid)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@email.com")
-                .password("123456")
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
-        when(userRepository.findById(userUuid)).thenReturn(Optional.ofNullable(mockUser));
-        User mockUpdatedUser = User.builder()
-                .id(userUuid)
-                .firstName("Johnny")
-                .lastName("Doe")
-                .email("john.doe@email.com")
-                .password("123456")
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
-        when(userRepository.save(any(User.class))).thenReturn(mockUpdatedUser);
+        CreateUserDTO createTestUser = new CreateUserDTO("John", "Doe", "jeohndoe@email.com", "","123456");
+        UserDTO testUser = userService.save(createTestUser);
 
         // Act
         var response = mockMvc.perform(
-                put("/api/v1/user/" + userUuid)
+                put("/api/v1/user/" + testUser.id())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
         ).andReturn().getResponse();

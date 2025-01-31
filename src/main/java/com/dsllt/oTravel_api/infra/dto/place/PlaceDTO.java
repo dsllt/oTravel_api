@@ -38,4 +38,19 @@ public record PlaceDTO(
                 place.getRating()
         );
     }
+    public PlaceDTO(Place place) {
+        this(place.getId(),
+                place.getName(),
+                place.getImageUrl(),
+                place.getDescription(),
+                place.getAddress(),
+                place.getCity(),
+                place.getCountry(),
+                place.getLatitude(),
+                place.getLongitude(),
+                place.getSlug(),
+                place.getPhone(),
+                place.getCategory(),
+                place.getRating());
+    }
 }

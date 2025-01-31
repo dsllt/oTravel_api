@@ -4,6 +4,7 @@ package com.dsllt.oTravel_api.infra.controller;
 import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
 import com.dsllt.oTravel_api.core.usecase.FavoriteService;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
+import com.dsllt.oTravel_api.infra.dto.favorite.UserFavoritesDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,13 @@ public class FavoritesController {
         Favorite updatedFavorite = favoriteService.update(favoriteUuid);
 
         return ResponseEntity.ok().body(updatedFavorite);
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<UserFavoritesDTO>> getUsersWithFavorites(){
+        List<UserFavoritesDTO> usersWithFavorites = favoriteService.getUsersWithActiveFavorites();
+
+        return ResponseEntity.ok().body(usersWithFavorites);
     }
 }
 

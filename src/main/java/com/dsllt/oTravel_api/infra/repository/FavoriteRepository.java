@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface FavoriteRepository extends JpaRepository<Favorite, UUID> {
     boolean existsByUserIdAndPlaceId(UUID userId, UUID placeId);
     List<Favorite> findAllByUserId(UUID userId);
+    List<Favorite> findAllByActiveTrue();
 }

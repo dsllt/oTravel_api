@@ -5,11 +5,14 @@ import com.dsllt.oTravel_api.core.usecase.FavoriteService;
 import com.dsllt.oTravel_api.core.usecase.PlaceService;
 import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
+import com.dsllt.oTravel_api.infra.dto.favorite.UserFavoritesDTO;
 import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
 import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
 import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -177,5 +180,42 @@ class FavoritesControllerTest  {
         assertTrue(responseBody2.contains(String.valueOf(true)));
     }
 
+    @Test
+    @DisplayName("should retrieve all users with saved favorites and its favorites")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
+    void testGetAllUsersWithActiveFavorites() throws Exception{
+        // Arrange
+        CreateUserDTO createTestUser1 = new CreateUserDTO("John", "Doe", "jeohndoe@email.com", "","123456");
+        UserDTO mockUser1 = userService.save(createTestUser1);
+        CreateUserDTO createTestUser2 = new CreateUserDTO("John", "Doe", "jeohndoe2@email.com", "","123456");
+        UserDTO mockUser2 = userService.save(createTestUser2);
+        CreatePlaceDTO createTestPlace1 = new CreatePlaceDTO("Test Place", "", "", "Address", "City", "Country", -30.01,-30.01, "test", "", List.of(PlaceCategory.valueOf("COFFEE")));
+        PlaceDTO testPlace1 = placeService.save(createTestPlace1);
+        CreatePlaceDTO createTestPlace2 = new CreatePlaceDTO("Test Place2", "", "", "Address", "City", "Country", -30.01,-30.01, "test2", "", List.of(PlaceCategory.valueOf("COFFEE")));
+        PlaceDTO testPlace2 = placeService.save(createTestPlace2);
+        CreateFavoriteDTO createFavoriteDTO1 = new CreateFavoriteDTO(mockUser1.id(),testPlace1.id());
+        Favorite mockedFavorite1 = favoriteService.save(createFavoriteDTO1);
+        CreateFavoriteDTO createFavoriteDTO2 = new CreateFavoriteDTO(mockUser2.id(),testPlace2.id());
+        Favorite mockedFavorite2 = favoriteService.save(createFavoriteDTO2);
+        CreateFavoriteDTO createFavoriteDTO3 = new CreateFavoriteDTO(mockUser2.id(),testPlace1.id());
+        Favorite mockedFavorite3 = favoriteService.save(createFavoriteDTO3);
 
+        // Act
+        var response = mockMvc.perform(
+                get("/api/v1/favorite/active")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn().getResponse();
+
+        // Assert
+        assertEquals(200, response.getStatus());
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<UserFavoritesDTO> userWithFavorites = objectMapper.readValue(response.getContentAsString(), new TypeReference<>() {});
+        assertEquals(2, userWithFavorites.size());
+        UserFavoritesDTO user1 = userWithFavorites.stream().filter(u -> u.user().id().equals(mockUser1.id())).findFirst().orElse(null);
+        UserFavoritesDTO user2 = userWithFavorites.stream().filter(u -> u.user().id().equals(mockUser2.id())).findFirst().orElse(null);
+        assertNotNull(user1);
+        assertNotNull(user2);
+        assertEquals(1, user1.favorites().size());
+        assertEquals(2, user2.favorites().size());
+    }
 }
