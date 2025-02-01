@@ -40,10 +40,11 @@ public class FavoriteService {
         return favoriteRepository.findAllByUserId(userUuid);
     }
 
-    public Favorite update(UUID favoriteUUID){
-        Favorite savedFavorite = favoriteRepository.findById(favoriteUUID).orElseThrow(() -> new ObjectNotFoundException("Favorito não encontrado."));
+    public Favorite update(@Valid CreateFavoriteDTO favoriteDTO)
+    {
+        Favorite savedFavorite = favoriteRepository.findByUserIdAndPlaceId(favoriteDTO.userId(), favoriteDTO.placeId());
         savedFavorite.setActive(!savedFavorite.isActive());
-        return  favoriteRepository.save(savedFavorite);
+        return favoriteRepository.save(savedFavorite);
     }
 
     public List<UserFavoritesDTO> getUsersWithActiveFavorites(){

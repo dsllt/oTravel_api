@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, UUID> {
+    Favorite findByUserIdAndPlaceId(UUID userId, UUID placeId);
     boolean existsByUserIdAndPlaceId(UUID userId, UUID placeId);
     List<Favorite> findAllByUserId(UUID userId);
     List<Favorite> findAllByActiveTrue();

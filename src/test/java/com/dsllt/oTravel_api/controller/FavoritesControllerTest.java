@@ -136,12 +136,19 @@ class FavoritesControllerTest  {
         CreatePlaceDTO createTestPlace = new CreatePlaceDTO("Test Place", "", "", "Address", "City", "Country", -30.01,-30.01, "test", "", List.of(PlaceCategory.valueOf("COFFEE")));
         PlaceDTO testPlace = placeService.save(createTestPlace);
         CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
-        Favorite mockedFavorite = favoriteService.save(createFavoriteDTO);
+        favoriteService.save(createFavoriteDTO);
+        String json = String.format("""
+                 {
+                	"userId": "%s",
+                	"placeId": "%s"
+                }
+                """, testUser.id(), testPlace.id());
 
         // Act
         var response = mockMvc.perform(
-                put("/api/v1/favorite/" + mockedFavorite.getId())
+                put("/api/v1/favorite")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
         ).andReturn().getResponse();
 
         // Assert
@@ -149,7 +156,7 @@ class FavoritesControllerTest  {
     }
 
     @Test
-    @DisplayName("should allow to update favorites active status")
+    @DisplayName("should allow to update favorites active status correctly when changing it for the second time")
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testUpdate2() throws Exception {
         // Arrange
@@ -158,16 +165,24 @@ class FavoritesControllerTest  {
         CreatePlaceDTO createTestPlace = new CreatePlaceDTO("Test Place", "", "", "Address", "City", "Country", -30.01,-30.01, "test", "", List.of(PlaceCategory.valueOf("COFFEE")));
         PlaceDTO testPlace = placeService.save(createTestPlace);
         CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
-        Favorite mockedFavorite = favoriteService.save(createFavoriteDTO);
+        favoriteService.save(createFavoriteDTO);
+        String json = String.format("""
+                 {
+                	"userId": "%s",
+                	"placeId": "%s"
+                }
+                """, testUser.id(), testPlace.id());
 
         // Act
         var response1 = mockMvc.perform(
-                put("/api/v1/favorite/" + mockedFavorite.getId())
+                put("/api/v1/favorite")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
         ).andReturn().getResponse();
         var response2 = mockMvc.perform(
-                put("/api/v1/favorite/" + mockedFavorite.getId())
+                put("/api/v1/favorite")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
         ).andReturn().getResponse();
 
         // Assert
@@ -194,11 +209,11 @@ class FavoritesControllerTest  {
         CreatePlaceDTO createTestPlace2 = new CreatePlaceDTO("Test Place2", "", "", "Address", "City", "Country", -30.01,-30.01, "test2", "", List.of(PlaceCategory.valueOf("COFFEE")));
         PlaceDTO testPlace2 = placeService.save(createTestPlace2);
         CreateFavoriteDTO createFavoriteDTO1 = new CreateFavoriteDTO(mockUser1.id(),testPlace1.id());
-        Favorite mockedFavorite1 = favoriteService.save(createFavoriteDTO1);
+        favoriteService.save(createFavoriteDTO1);
         CreateFavoriteDTO createFavoriteDTO2 = new CreateFavoriteDTO(mockUser2.id(),testPlace2.id());
-        Favorite mockedFavorite2 = favoriteService.save(createFavoriteDTO2);
+        favoriteService.save(createFavoriteDTO2);
         CreateFavoriteDTO createFavoriteDTO3 = new CreateFavoriteDTO(mockUser2.id(),testPlace1.id());
-        Favorite mockedFavorite3 = favoriteService.save(createFavoriteDTO3);
+        favoriteService.save(createFavoriteDTO3);
 
         // Act
         var response = mockMvc.perform(
@@ -218,4 +233,5 @@ class FavoritesControllerTest  {
         assertEquals(1, user1.favorites().size());
         assertEquals(2, user2.favorites().size());
     }
+
 }

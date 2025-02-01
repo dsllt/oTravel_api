@@ -34,9 +34,9 @@ public class FavoritesController {
         return ResponseEntity.status(200).body(userFavorites);
     }
 
-    @PutMapping("/{favoriteUuid}")
-    public ResponseEntity<Favorite> update(@NotNull @PathVariable UUID favoriteUuid){
-        Favorite updatedFavorite = favoriteService.update(favoriteUuid);
+    @PutMapping
+    public ResponseEntity<Favorite> update(@RequestBody @Valid CreateFavoriteDTO createFavoriteDTO){
+        Favorite updatedFavorite = favoriteService.update(createFavoriteDTO);
 
         return ResponseEntity.ok().body(updatedFavorite);
     }

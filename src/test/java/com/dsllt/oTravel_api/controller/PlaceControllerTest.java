@@ -95,7 +95,6 @@ class PlaceControllerTest {
         var response = mockMvc.perform(
                 get("/api/v1/place")
                         .contentType(MediaType.APPLICATION_JSON)
-
         ).andReturn().getResponse();
 
         // Assert
@@ -115,7 +114,6 @@ class PlaceControllerTest {
         var response = mockMvc.perform(
                 get("/api/v1/place/" + placeId)
                         .contentType(MediaType.APPLICATION_JSON)
-
         ).andReturn().getResponse();
 
         // Assert
