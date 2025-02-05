@@ -5,6 +5,7 @@ import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.core.exceptions.FavoriteAlreadyExistsException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
+import com.dsllt.oTravel_api.infra.dto.favorite.ActiveFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.UserFavoritesDTO;
 import com.dsllt.oTravel_api.infra.repository.FavoriteRepository;
@@ -36,13 +37,18 @@ public class FavoriteService {
        return favoriteRepository.save(newFavorite);
     }
 
+    public ActiveFavoriteDTO getIsFavoriteActive(UUID userId, UUID placeId){
+        Favorite favorite = favoriteRepository.findByUserIdAndPlaceId(userId, placeId);
+        return new ActiveFavoriteDTO(favorite.isActive());
+    }
+
     public List<Favorite> getByUserId(UUID userUuid){
         return favoriteRepository.findAllByUserId(userUuid);
     }
 
-    public Favorite update(@Valid CreateFavoriteDTO favoriteDTO)
+    public Favorite update(UUID userUuid, UUID placeUuid)
     {
-        Favorite savedFavorite = favoriteRepository.findByUserIdAndPlaceId(favoriteDTO.userId(), favoriteDTO.placeId());
+        Favorite savedFavorite = favoriteRepository.findByUserIdAndPlaceId(userUuid, placeUuid);
         savedFavorite.setActive(!savedFavorite.isActive());
         return favoriteRepository.save(savedFavorite);
     }

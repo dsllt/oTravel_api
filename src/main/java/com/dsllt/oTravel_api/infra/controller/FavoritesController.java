@@ -3,6 +3,7 @@ package com.dsllt.oTravel_api.infra.controller;
 
 import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
 import com.dsllt.oTravel_api.core.usecase.FavoriteService;
+import com.dsllt.oTravel_api.infra.dto.favorite.ActiveFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.UserFavoritesDTO;
 import jakarta.validation.Valid;
@@ -27,6 +28,12 @@ public class FavoritesController {
 
         return ResponseEntity.status(201).body(newFavorite);
     }
+    @GetMapping
+    public ResponseEntity<ActiveFavoriteDTO> getIsFavoriteActive(@RequestParam UUID placeId, @RequestParam UUID userId){
+        ActiveFavoriteDTO isFavoriteActive = favoriteService.getIsFavoriteActive(userId, placeId);
+
+        return ResponseEntity.status(200).body(isFavoriteActive);
+    }
     @GetMapping("/{userUuid}")
     public ResponseEntity<List<Favorite>> getByUserId(@NotNull @PathVariable UUID userUuid){
         List<Favorite> userFavorites = favoriteService.getByUserId(userUuid);
@@ -34,9 +41,9 @@ public class FavoritesController {
         return ResponseEntity.status(200).body(userFavorites);
     }
 
-    @PutMapping
-    public ResponseEntity<Favorite> update(@RequestBody @Valid CreateFavoriteDTO createFavoriteDTO){
-        Favorite updatedFavorite = favoriteService.update(createFavoriteDTO);
+    @PutMapping("/{userId}")
+    public ResponseEntity<Favorite> update(@NotNull @PathVariable UUID userId, @RequestParam UUID placeUuid){
+        Favorite updatedFavorite = favoriteService.update(userId, placeUuid);
 
         return ResponseEntity.ok().body(updatedFavorite);
     }

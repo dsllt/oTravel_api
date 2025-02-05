@@ -1,6 +1,5 @@
 package com.dsllt.oTravel_api.controller;
 
-import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
 import com.dsllt.oTravel_api.core.usecase.FavoriteService;
 import com.dsllt.oTravel_api.core.usecase.PlaceService;
 import com.dsllt.oTravel_api.core.usecase.UserService;
@@ -12,6 +11,7 @@ import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
 import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,12 +21,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
@@ -44,6 +47,8 @@ class FavoritesControllerTest  {
     private UserService userService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private WebApplicationContext context;
     @BeforeEach
     void cleanDatabase() {
         jdbcTemplate.execute("DELETE FROM favorites");
@@ -51,6 +56,7 @@ class FavoritesControllerTest  {
         jdbcTemplate.execute("DELETE FROM places");
         jdbcTemplate.execute("DELETE FROM users");
     }
+
     @Test
     @DisplayName("should register user favorite successfully")
     @WithMockUser(value = "john", authorities = "ROLE_USER")
@@ -137,18 +143,12 @@ class FavoritesControllerTest  {
         PlaceDTO testPlace = placeService.save(createTestPlace);
         CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
         favoriteService.save(createFavoriteDTO);
-        String json = String.format("""
-                 {
-                	"userId": "%s",
-                	"placeId": "%s"
-                }
-                """, testUser.id(), testPlace.id());
 
         // Act
         var response = mockMvc.perform(
-                put("/api/v1/favorite")
+                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
+                        .with(user("john").authorities(new SimpleGrantedAuthority("ROLE_USER")))
         ).andReturn().getResponse();
 
         // Assert
@@ -166,23 +166,15 @@ class FavoritesControllerTest  {
         PlaceDTO testPlace = placeService.save(createTestPlace);
         CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
         favoriteService.save(createFavoriteDTO);
-        String json = String.format("""
-                 {
-                	"userId": "%s",
-                	"placeId": "%s"
-                }
-                """, testUser.id(), testPlace.id());
 
         // Act
         var response1 = mockMvc.perform(
-                put("/api/v1/favorite")
+                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
         ).andReturn().getResponse();
         var response2 = mockMvc.perform(
-                put("/api/v1/favorite")
+                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
         ).andReturn().getResponse();
 
         // Assert
@@ -234,4 +226,33 @@ class FavoritesControllerTest  {
         assertEquals(2, user2.favorites().size());
     }
 
+    @Test
+    @DisplayName("should indicate if favorite exists and is active")
+    @WithMockUser(value = "jeohndoe@email.com", authorities = "ROLE_USER")
+    void testIsFavoriteActive() throws Exception{
+        // Arrange
+        CreateUserDTO createTestUser = new CreateUserDTO("John", "Doe", "jeohndoe@email.com", "","123456");
+        UserDTO testUser = userService.save(createTestUser);
+        CreatePlaceDTO createTestPlace1 = new CreatePlaceDTO("Test Place", "", "", "Address", "City", "Country", -30.01,-30.01, "test", "", List.of(PlaceCategory.valueOf("COFFEE")));
+        PlaceDTO testPlace = placeService.save(createTestPlace1);
+        CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
+        favoriteService.save(createFavoriteDTO);
+
+        // Act
+        var response = mockMvc.perform(
+                get("/api/v1/favorite")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("placeId", testPlace.id().toString())
+                        .param("userId", testUser.id().toString())
+        ).andReturn().getResponse();
+
+        // Assert
+        assertEquals(200, response.getStatus());
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode responseBody = objectMapper.readTree(response.getContentAsString());
+        assertTrue(responseBody.has("isActive"));
+        assertTrue(responseBody.get("isActive").asBoolean());
+    }
+
 }
+
