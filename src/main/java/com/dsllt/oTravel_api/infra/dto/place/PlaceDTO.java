@@ -34,7 +34,7 @@ public record PlaceDTO(
                 place.getLongitude(),
                 place.getSlug(),
                 place.getPhone(),
-                place.getCategory(),
+                place.getCategoryList(),
                 place.getRating()
         );
     }
@@ -50,7 +50,7 @@ public record PlaceDTO(
                 place.getLongitude(),
                 place.getSlug(),
                 place.getPhone(),
-                place.getCategory(),
+                place.getCategoryList(),
                 place.getRating());
     }
 }

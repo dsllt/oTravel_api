@@ -1,6 +1,9 @@
 package com.dsllt.oTravel_api.core.entity.user;
 
+import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
+import com.dsllt.oTravel_api.core.entity.review.Review;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +35,7 @@ public class User implements UserDetails {
     private String email;
     private String image;
     private String password;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

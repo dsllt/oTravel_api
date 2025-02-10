@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class FavoritesControllerTest  {
 
     @Autowired
@@ -49,6 +51,7 @@ class FavoritesControllerTest  {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private WebApplicationContext context;
+
     @BeforeEach
     void cleanDatabase() {
         jdbcTemplate.execute("DELETE FROM favorites");

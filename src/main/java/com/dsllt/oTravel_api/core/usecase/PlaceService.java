@@ -97,7 +97,7 @@ public class PlaceService {
             retrievedPlace.setPhone(placeDTO.phone());
         }
         if(placeDTO.category() != null){
-            retrievedPlace.setCategory(placeDTO.category());
+            retrievedPlace.setCategoryList(placeDTO.category());
         }
         if(placeDTO.rating() != null && !placeDTO.rating().isNaN()){
             retrievedPlace.setRating(placeDTO.rating());

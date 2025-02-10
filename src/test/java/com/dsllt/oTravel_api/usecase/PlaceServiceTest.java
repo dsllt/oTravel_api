@@ -66,6 +66,9 @@ class PlaceServiceTest {
                 "",
                 List.of(PlaceCategory.COFFEE)
         );
+        String[] categoryArray = createPlaceDTO.category().stream()
+                .map(Enum::name)
+                .toArray(String[]::new);
         Place repositorySavedPlace = Place.builder()
                 .id(UUID.randomUUID())
                 .name(createPlaceDTO.name())
@@ -78,7 +81,7 @@ class PlaceServiceTest {
                 .longitude(createPlaceDTO.longitude())
                 .slug(createPlaceDTO.slug())
                 .phone(createPlaceDTO.phone())
-                .category(createPlaceDTO.category())
+                .category(categoryArray)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -203,6 +206,10 @@ class PlaceServiceTest {
     public void getPlaceByIdTest(){
         // Arrange
         UUID placeUuid = UUID.randomUUID();
+        List<PlaceCategory> categoryList = List.of(PlaceCategory.COFFEE);
+        String[] categoryArray = categoryList.stream()
+                .map(Enum::name)
+                .toArray(String[]::new);
         Place savedPlace = Place.builder()
                 .id(placeUuid)
                 .name("PlaceName Test")
@@ -215,7 +222,7 @@ class PlaceServiceTest {
                 .longitude(-50.10)
                 .slug("place-test-slug")
                 .phone("00000000000")
-                .category(List.of(PlaceCategory.COFFEE))
+                .category(categoryArray)
                 .createdAt(LocalDateTime.now())
                 .build();
         when(placeRepository.findById(placeUuid)).thenReturn(Optional.of(savedPlace));
@@ -249,6 +256,10 @@ class PlaceServiceTest {
     public void updatePlaceByIdTest(){
         // Arrange
         UUID placeUuid = UUID.randomUUID();
+        List<PlaceCategory> categoryList = List.of(PlaceCategory.COFFEE);
+        String[] categoryArray = categoryList.stream()
+                .map(Enum::name)
+                .toArray(String[]::new);
         Place existingPlace = Place.builder()
                 .id(placeUuid)
                 .name("PlaceName Test")
@@ -261,10 +272,22 @@ class PlaceServiceTest {
                 .longitude(-50.10)
                 .slug("place-test-slug")
                 .phone("00000000000")
-                .category(List.of(PlaceCategory.COFFEE))
+                .category(categoryArray)
                 .createdAt(LocalDateTime.now())
                 .build();
-        PlaceDTO updatePlaceDTO = new PlaceDTO(placeUuid, "Updated Name", "","",existingPlace.getAddress(),existingPlace.getCity(),existingPlace.getCountry(),existingPlace.getLatitude(),existingPlace.getLongitude(),existingPlace.getSlug(),existingPlace.getPhone(),existingPlace.getCategory(),existingPlace.getRating());
+        PlaceDTO updatePlaceDTO = new PlaceDTO( placeUuid,
+                "Updated Name",
+                "",
+                "",
+                existingPlace.getAddress(),
+                existingPlace.getCity(),
+                existingPlace.getCountry(),
+                existingPlace.getLatitude(),
+                existingPlace.getLongitude(),
+                existingPlace.getSlug(),
+                existingPlace.getPhone(),
+                existingPlace.getCategoryList(),
+                existingPlace.getRating());
         Place updatedPlace = Place.builder()
                 .id(placeUuid)
                 .name(updatePlaceDTO.name())
@@ -277,7 +300,7 @@ class PlaceServiceTest {
                 .longitude(-50.10)
                 .slug("place-test-slug")
                 .phone("00000000000")
-                .category(List.of(PlaceCategory.COFFEE))
+                .category(categoryArray)
                 .createdAt(LocalDateTime.now())
                 .build();
         when(placeRepository.findById(placeUuid)).thenReturn(Optional.of(existingPlace));
