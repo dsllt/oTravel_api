@@ -34,6 +34,7 @@ public class FavoritesController {
 
         return ResponseEntity.status(200).body(isFavoriteActive);
     }
+
     @GetMapping("/{userUuid}")
     public ResponseEntity<UserFavoritesDTO> getByUserId(@NotNull @PathVariable UUID userUuid){
         UserFavoritesDTO userFavorites = favoriteService.getByUserId(userUuid);
@@ -42,8 +43,8 @@ public class FavoritesController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Favorite> update(@NotNull @PathVariable UUID userId, @RequestParam UUID placeUuid){
-        Favorite updatedFavorite = favoriteService.update(userId, placeUuid);
+    public ResponseEntity<Favorite> update(@NotNull @PathVariable UUID userId, @RequestParam UUID placeId){
+        Favorite updatedFavorite = favoriteService.update(userId, placeId);
 
         return ResponseEntity.ok().body(updatedFavorite);
     }
