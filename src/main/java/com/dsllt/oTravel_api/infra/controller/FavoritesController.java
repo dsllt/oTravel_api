@@ -35,8 +35,8 @@ public class FavoritesController {
         return ResponseEntity.status(200).body(isFavoriteActive);
     }
     @GetMapping("/{userUuid}")
-    public ResponseEntity<List<Favorite>> getByUserId(@NotNull @PathVariable UUID userUuid){
-        List<Favorite> userFavorites = favoriteService.getByUserId(userUuid);
+    public ResponseEntity<UserFavoritesDTO> getByUserId(@NotNull @PathVariable UUID userUuid){
+        UserFavoritesDTO userFavorites = favoriteService.getByUserId(userUuid);
 
         return ResponseEntity.status(200).body(userFavorites);
     }

@@ -42,8 +42,11 @@ public class FavoriteService {
         return new ActiveFavoriteDTO(favorite.isActive());
     }
 
-    public List<Favorite> getByUserId(UUID userUuid){
-        return favoriteRepository.findAllByUserId(userUuid);
+    public UserFavoritesDTO getByUserId(UUID userUuid){
+        List<Favorite> usersFavorites = favoriteRepository.findAllByUserId(userUuid);
+        User user = usersFavorites.get(0).getUser();
+        List<Place> places = usersFavorites.stream().map(Favorite::getPlace).collect(Collectors.toList());
+        return new UserFavoritesDTO(user, places);
     }
 
     public Favorite update(UUID userUuid, UUID placeUuid)
