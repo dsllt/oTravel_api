@@ -43,7 +43,7 @@ public class FavoriteService {
     }
 
     public UserFavoritesDTO getByUserId(UUID userUuid){
-        List<Favorite> usersFavorites = favoriteRepository.findAllByUserId(userUuid);
+        List<Favorite> usersFavorites = favoriteRepository.findAllByUserIdAndActiveTrue(userUuid);
         User user = usersFavorites.get(0).getUser();
         List<Place> places = usersFavorites.stream().map(Favorite::getPlace).collect(Collectors.toList());
         return new UserFavoritesDTO(user, places);
@@ -61,7 +61,6 @@ public class FavoriteService {
         Map<User, List<Place>> userPlacesMap = activeFavorites.stream()
                 .collect(Collectors.groupingBy(Favorite::getUser,
                         Collectors.mapping(Favorite::getPlace, Collectors.toList())));
-
         return  userPlacesMap.entrySet().stream()
                 .map(entry -> new UserFavoritesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
