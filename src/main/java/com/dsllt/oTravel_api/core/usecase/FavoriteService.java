@@ -44,6 +44,10 @@ public class FavoriteService {
 
     public UserFavoritesDTO getByUserId(UUID userUuid){
         List<Favorite> usersFavorites = favoriteRepository.findAllByUserIdAndActiveTrue(userUuid);
+        if(usersFavorites.isEmpty()){
+            User user = userRepository.findById(userUuid).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
+            return new UserFavoritesDTO(user, List.of());
+        }
         User user = usersFavorites.get(0).getUser();
         List<Place> places = usersFavorites.stream().map(Favorite::getPlace).collect(Collectors.toList());
         return new UserFavoritesDTO(user, places);
