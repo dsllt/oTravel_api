@@ -97,7 +97,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> handleTokenVerificationException(TokenVerificationException e,
                                                                           HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.FORBIDDEN;
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
 
         StandardError err = new StandardError(Instant.now(), status.value(), "Erro ao verificar token.", e.getMessage(),
                 request.getRequestURI());

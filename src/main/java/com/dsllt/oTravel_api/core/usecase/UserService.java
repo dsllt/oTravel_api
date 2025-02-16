@@ -31,26 +31,19 @@ public class UserService {
 
     public UserDTO getUserById(UUID userUUID) {
         User user = userRepository.findById(userUUID).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
-
         return mapUserToUserDTO(user);
     }
-
 
     public UserDTO updateUser(UUID userUUID, CreateUserDTO updateUserDTO) {
         User retrievedUser = findUserById(userUUID);
         User updatedUser = updateUser(retrievedUser, updateUserDTO);
-        User savedUser = saveUser(updatedUser);
-
+        User savedUser = userRepository.save(updatedUser);
         return mapUserToUserDTO(savedUser);
     }
 
     private User findUserById(UUID userUUID) {
         return userRepository.findById(userUUID)
                 .orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
-    }
-
-    private User saveUser(User user) {
-        return userRepository.save(user);
     }
 
     private UserDTO mapUserToUserDTO(User user) {
@@ -79,5 +72,4 @@ public class UserService {
 
         return retrievedUser;
     }
-
 }

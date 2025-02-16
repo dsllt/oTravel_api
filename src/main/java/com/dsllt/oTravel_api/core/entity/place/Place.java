@@ -9,8 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Builder
 @NoArgsConstructor
@@ -34,9 +36,7 @@ public class Place {
     private Double longitude;
     private String slug;
     private String phone;
-    @Convert(converter = PlaceCategoryArrayConverter.class)
-    @Column(name = "category", columnDefinition = "place_category[]")
-    private List<PlaceCategory> category;
+    private String[] category;
     private Double rating;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -52,7 +52,19 @@ public class Place {
         this.longitude = createPlaceDTO.longitude();
         this.slug = createPlaceDTO.slug();
         this.phone = createPlaceDTO.phone();
-        this.category = createPlaceDTO.category();
         this.createdAt = LocalDateTime.now();
+        this.setCategoryList(createPlaceDTO.category());
+    }
+
+    public List<PlaceCategory> getCategoryList() {
+        return category != null
+                ? Arrays.stream(category).map(PlaceCategory::valueOf).collect(Collectors.toList())
+                : List.of();
+    }
+
+    public void setCategoryList(List<PlaceCategory> categories) {
+        this.category = categories != null
+                ? categories.stream().map(Enum::name).toArray(String[]::new)
+                : new String[]{};
     }
 }

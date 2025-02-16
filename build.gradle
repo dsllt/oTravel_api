@@ -5,10 +5,6 @@ plugins {
 	id 'jacoco'
 }
 
-jacoco {
-	toolVersion = "0.8.7"
-}
-
 group = 'com.dsllt'
 version = '0.0.1-SNAPSHOT'
 
@@ -35,7 +31,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.auth0:java-jwt:4.4.0'
-	implementation 'org.postgresql:postgresql:42.3.1'
+	implementation 'org.postgresql:postgresql:42.7.2'
+	implementation("org.flywaydb:flyway-core")
+	implementation("org.flywaydb:flyway-database-postgresql")
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
@@ -48,6 +46,14 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << '-parameters'
+}
+
+jacoco {
+	toolVersion = "0.8.7"
 }
 
 jacocoTestReport {

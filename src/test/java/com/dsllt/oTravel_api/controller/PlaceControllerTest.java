@@ -5,6 +5,7 @@ import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import com.dsllt.oTravel_api.core.usecase.PlaceService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class PlaceControllerTest {
 
     @Autowired
@@ -35,6 +39,15 @@ class PlaceControllerTest {
     PlaceService placeService;
     @MockBean
     PlaceRepository placeRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+    }
 
     @Test
     @DisplayName("should throw exception when trying to register a place with invalid data")
@@ -95,7 +108,6 @@ class PlaceControllerTest {
         var response = mockMvc.perform(
                 get("/api/v1/place")
                         .contentType(MediaType.APPLICATION_JSON)
-
         ).andReturn().getResponse();
 
         // Assert
@@ -115,7 +127,6 @@ class PlaceControllerTest {
         var response = mockMvc.perform(
                 get("/api/v1/place/" + placeId)
                         .contentType(MediaType.APPLICATION_JSON)
-
         ).andReturn().getResponse();
 
         // Assert
