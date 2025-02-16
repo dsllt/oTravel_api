@@ -5,8 +5,8 @@ import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.core.exceptions.FavoriteAlreadyExistsException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.infra.dto.favorite.ActiveFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
+import com.dsllt.oTravel_api.infra.dto.favorite.FavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.UserFavoritesDTO;
 import com.dsllt.oTravel_api.infra.repository.FavoriteRepository;
 import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
@@ -37,11 +37,6 @@ public class FavoriteService {
        return favoriteRepository.save(newFavorite);
     }
 
-    public ActiveFavoriteDTO getIsFavoriteActive(UUID userId, UUID placeId){
-        Favorite favorite = favoriteRepository.findByUserIdAndPlaceId(userId, placeId);
-        return new ActiveFavoriteDTO(favorite.isActive());
-    }
-
     public UserFavoritesDTO getByUserId(UUID userUuid){
         List<Favorite> usersFavorites = favoriteRepository.findAllByUserIdAndActiveTrue(userUuid);
         if(usersFavorites.isEmpty()){
@@ -53,11 +48,12 @@ public class FavoriteService {
         return new UserFavoritesDTO(user, places);
     }
 
-    public Favorite update(UUID userUuid, UUID placeUuid)
+    public FavoriteDTO update(UUID userUuid, UUID placeUuid)
     {
         Favorite savedFavorite = favoriteRepository.findByUserIdAndPlaceId(userUuid, placeUuid);
         savedFavorite.setActive(!savedFavorite.isActive());
-        return favoriteRepository.save(savedFavorite);
+        Favorite updatedFavorite = favoriteRepository.save(savedFavorite);
+        return new FavoriteDTO(updatedFavorite);
     }
 
     public List<UserFavoritesDTO> getUsersWithActiveFavorites(){
