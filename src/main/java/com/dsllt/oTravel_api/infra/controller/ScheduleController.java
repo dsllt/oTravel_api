@@ -1,6 +1,5 @@
 package com.dsllt.oTravel_api.infra.controller;
 
-import com.dsllt.oTravel_api.core.entity.schedule.Schedule;
 import com.dsllt.oTravel_api.core.usecase.ScheduleService;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;

@@ -2,8 +2,8 @@ package com.dsllt.oTravel_api.usecase;
 
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.schedule.Schedule;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.core.exceptions.ScheduleAlreadyExistsException;
 import com.dsllt.oTravel_api.core.usecase.ScheduleService;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
@@ -19,13 +19,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
-
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +52,7 @@ class ScheduleServiceTest {
         // Act
         Throwable exception = catchException(() -> scheduleService.save(createScheduleDTO));
         // Assert
-        assertThat(exception).isInstanceOf(ScheduleAlreadyExistsException.class);
+        assertThat(exception).isInstanceOf(BusinessException.class);
     }
 
     @Test

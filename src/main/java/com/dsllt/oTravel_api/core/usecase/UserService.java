@@ -1,11 +1,11 @@
 package com.dsllt.oTravel_api.core.usecase;
 
+import com.dsllt.oTravel_api.core.entity.user.User;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
+import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
-import com.dsllt.oTravel_api.core.entity.user.User;
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
-import com.dsllt.oTravel_api.core.exceptions.EmailAlreadyExistsException;
-import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class UserService {
 
     public UserDTO save(CreateUserDTO createUserDTO) {
         if(userRepository.existsByEmail(createUserDTO.email())){
-            throw new EmailAlreadyExistsException("E-mail já cadastrado.");
+            throw new BusinessException("E-mail já cadastrado.");
         }
         User user = User.createNewUserFromCreateUserDTO(createUserDTO);
 

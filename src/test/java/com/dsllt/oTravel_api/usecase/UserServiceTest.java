@@ -1,29 +1,28 @@
 package com.dsllt.oTravel_api.usecase;
 
+import com.dsllt.oTravel_api.core.entity.user.User;
+import com.dsllt.oTravel_api.core.entity.user.UserRole;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.usecase.UserService;
 import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
 import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
-import com.dsllt.oTravel_api.core.entity.user.User;
-import com.dsllt.oTravel_api.core.entity.user.UserRole;
 import com.dsllt.oTravel_api.infra.repository.UserRepository;
-import com.dsllt.oTravel_api.core.exceptions.EmailAlreadyExistsException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 
 @ActiveProfiles("test")
@@ -81,7 +80,7 @@ class UserServiceTest {
         Throwable exception = Assertions.catchException(() -> userService.save(validUser));
 
         //Assert
-        assertThat(exception).isInstanceOf(EmailAlreadyExistsException.class)
+        assertThat(exception).isInstanceOf(BusinessException.class)
                 .hasMessage("E-mail já cadastrado.");
 
         verify(userRepository, never()).save(repositorySavedUser);

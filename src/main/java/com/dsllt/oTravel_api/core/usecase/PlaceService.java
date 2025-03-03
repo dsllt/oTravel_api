@@ -1,14 +1,14 @@
 package com.dsllt.oTravel_api.core.usecase;
 
 import com.dsllt.oTravel_api.core.entity.CustomPage;
-import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
-import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.place.PlaceFilter;
 import com.dsllt.oTravel_api.core.entity.place.PlaceSpecification;
-import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.core.exceptions.PlaceAlreadyExistsException;
+import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
+import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
+import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class PlaceService {
 
     public PlaceDTO save(@Valid CreatePlaceDTO createPlaceDTO){
         if(placeRepository.existsByName(createPlaceDTO.name()) || placeRepository.existsBySlug(createPlaceDTO.slug())){
-            throw new PlaceAlreadyExistsException("Lugar já cadastrado.");
+            throw new BusinessException("Lugar já cadastrado.");
         }
         Place newPlace = new Place(createPlaceDTO);
         Place savedPlace = placeRepository.save(newPlace);

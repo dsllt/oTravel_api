@@ -3,7 +3,7 @@ package com.dsllt.oTravel_api.core.usecase;
 import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.user.User;
-import com.dsllt.oTravel_api.core.exceptions.FavoriteAlreadyExistsException;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.infra.dto.favorite.CreateFavoriteDTO;
 import com.dsllt.oTravel_api.infra.dto.favorite.FavoriteDTO;
@@ -29,7 +29,7 @@ public class FavoriteService {
     private final PlaceRepository placeRepository;
     public Favorite save(@Valid CreateFavoriteDTO favoriteDTO){
        if(favoriteRepository.existsByUserIdAndPlaceId(favoriteDTO.userId(), favoriteDTO.placeId())){
-          throw new FavoriteAlreadyExistsException("Favorito já incluído");
+          throw new BusinessException("Favorito já incluído");
        }
        User user = userRepository.findById(favoriteDTO.userId()).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
        Place place = placeRepository.findById(favoriteDTO.placeId()).orElseThrow(() -> new ObjectNotFoundException("Local não encontrado."));

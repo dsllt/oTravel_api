@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    public boolean existsByWeekDayAndPlaceId(WeekDay weekDay, UUID placeId);
-    public boolean existsByPlaceId(UUID placeId);
-    public Schedule[] findByPlaceId(UUID placeId);
+    boolean existsByWeekDayAndPlaceId(WeekDay weekDay, UUID placeId);
+    boolean existsByPlaceId(UUID placeId);
+    Schedule[] findByPlaceId(UUID placeId);
 }

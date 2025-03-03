@@ -17,35 +17,12 @@ import java.util.ArrayList;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<StandardError> emailAlreadyExistsError(EmailAlreadyExistsException e, HttpServletRequest request) {
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError err = new StandardError(Instant.now(), status.value(), "Email já cadastrado.", e.getMessage(),
-                request.getRequestURI());
-
-        return ResponseEntity.status(status).body(err);
-    }
-
-    @ExceptionHandler(PlaceAlreadyExistsException.class)
-    public ResponseEntity<StandardError> placeAlreadyExistsError(PlaceAlreadyExistsException e, HttpServletRequest request) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardError> handlerBusinessException(BusinessException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        StandardError err = new StandardError(Instant.now(), status.value(), "Lugar já cadastrado.", e.getMessage(),
-                request.getRequestURI());
-
-        return ResponseEntity.status(status).body(err);
-    }
-
-    @ExceptionHandler(ScheduleAlreadyExistsException.class)
-    public ResponseEntity<StandardError> handleScheduleAlreadyExistsException(ScheduleAlreadyExistsException e, HttpServletRequest request) {
-
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        StandardError err = new StandardError(Instant.now(), status.value(), "Horário já cadastrado.", e.getMessage(),
+        StandardError err = new StandardError(Instant.now(), status.value(), "Erro de negócio.", e.getMessage(),
                 request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
@@ -61,6 +38,7 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> handleValidationExceptions(MethodArgumentNotValidException e, WebRequest request) {
         BindingResult result = e.getBindingResult();

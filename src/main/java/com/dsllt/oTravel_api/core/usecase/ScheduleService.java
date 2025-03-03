@@ -1,8 +1,8 @@
 package com.dsllt.oTravel_api.core.usecase;
 
 import com.dsllt.oTravel_api.core.entity.schedule.Schedule;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.core.exceptions.ScheduleAlreadyExistsException;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
 import com.dsllt.oTravel_api.infra.repository.ScheduleRepository;
@@ -21,7 +21,7 @@ public class ScheduleService {
     public ScheduleDTO save(CreateScheduleDTO scheduleDTO){
         if(scheduleRepository.existsByWeekDayAndPlaceId(scheduleDTO.weekDay(), scheduleDTO.place().getId())){
             String message = String.format("Horário %s já cadastrado para %s.", scheduleDTO.weekDay(), scheduleDTO.place().getName());
-            throw new ScheduleAlreadyExistsException(message);
+            throw new BusinessException(message);
         }
         Schedule schedule = new Schedule(scheduleDTO);
         Schedule persistedSchedule = scheduleRepository.save(schedule);

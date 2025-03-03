@@ -1,15 +1,15 @@
 package com.dsllt.oTravel_api.usecase;
 
-import com.dsllt.oTravel_api.core.usecase.PlaceService;
 import com.dsllt.oTravel_api.core.entity.CustomPage;
-import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
-import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
-import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.place.PlaceFilter;
-import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.core.exceptions.PlaceAlreadyExistsException;
+import com.dsllt.oTravel_api.core.usecase.PlaceService;
+import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
+import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
+import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
+import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,7 +98,7 @@ class PlaceServiceTest {
     }
 
     @Test
-    @DisplayName("should throw PlaceAlreadyExistsException when trying to save place with existing name")
+    @DisplayName("should throw BusinessException when trying to save place with existing name")
     public void savePlaceErrorTest(){
         // Arrange
         CreatePlaceDTO createPlaceDTO = new CreatePlaceDTO(
@@ -121,13 +121,13 @@ class PlaceServiceTest {
         Throwable exception = catchException(() -> placeServiceImpl.save(createPlaceDTO));
 
         // Assert
-        assertThat(exception).isInstanceOf(PlaceAlreadyExistsException.class)
+        assertThat(exception).isInstanceOf(BusinessException.class)
                 .hasMessage("Lugar já cadastrado.");
 
     }
 
     @Test
-    @DisplayName("should throw PlaceAlreadyExistsException when trying to save place with existing slug")
+    @DisplayName("should throw BusinessException when trying to save place with existing slug")
     public void savePlaceErrorTest2(){
         // Arrange
         CreatePlaceDTO createPlaceDTO = new CreatePlaceDTO(
@@ -149,7 +149,7 @@ class PlaceServiceTest {
         Throwable exception = catchException(() -> placeServiceImpl.save(createPlaceDTO));
 
         // Assert
-        assertThat(exception).isInstanceOf(PlaceAlreadyExistsException.class)
+        assertThat(exception).isInstanceOf(BusinessException.class)
                 .hasMessage("Lugar já cadastrado.");
 
     }

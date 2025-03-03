@@ -2,8 +2,8 @@ package com.dsllt.oTravel_api.controller;
 
 import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.schedule.Schedule;
+import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
-import com.dsllt.oTravel_api.core.exceptions.ScheduleAlreadyExistsException;
 import com.dsllt.oTravel_api.core.usecase.ScheduleService;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
@@ -96,7 +96,7 @@ class ScheduleControllerTest {
                 OffsetTime.now(),
                 place);
         Mockito.when(scheduleService.save(Mockito.any(CreateScheduleDTO.class)))
-                .thenThrow(ScheduleAlreadyExistsException.class);
+                .thenThrow(BusinessException.class);
         String requestBody = objectMapper.writeValueAsString(newScheduleDTO);
         // Act and assert
         mockMvc.perform(post("/api/v1/schedule")
