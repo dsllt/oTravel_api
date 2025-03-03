@@ -51,6 +51,7 @@ public class Schedule {
         this.openAt = scheduleDTO.openAt();
         this.closeAt = scheduleDTO.closeAt();
         this.place= scheduleDTO.place();
+        this.updatedAt = ZonedDateTime.now();
     }
 
 
