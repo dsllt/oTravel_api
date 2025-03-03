@@ -28,12 +28,24 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
+
     @ExceptionHandler(PlaceAlreadyExistsException.class)
     public ResponseEntity<StandardError> placeAlreadyExistsError(PlaceAlreadyExistsException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         StandardError err = new StandardError(Instant.now(), status.value(), "Lugar já cadastrado.", e.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ScheduleAlreadyExistsException.class)
+    public ResponseEntity<StandardError> handleScheduleAlreadyExistsException(ScheduleAlreadyExistsException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardError err = new StandardError(Instant.now(), status.value(), "Horário já cadastrado.", e.getMessage(),
                 request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
@@ -72,7 +84,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<StandardError> objectNotFoundError(ObjectNotFoundException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> handleObjectNotFoundException(ObjectNotFoundException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.NOT_FOUND;
 

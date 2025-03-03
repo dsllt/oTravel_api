@@ -28,7 +28,6 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<ReviewDTO> create(@RequestBody @Valid CreateReviewDTO createReviewDTO, UriComponentsBuilder uriComponentsBuilder){
         Review savedReview = reviewService.save(createReviewDTO);
-        System.out.println("VEM DE ID "+savedReview.getId());
 
         var uri = uriComponentsBuilder.path("/api/v1/review/{reviewUuid}").buildAndExpand(savedReview.getId()).toUri();
 
