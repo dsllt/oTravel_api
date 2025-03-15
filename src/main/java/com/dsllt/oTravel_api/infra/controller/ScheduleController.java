@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,9 +25,9 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<ScheduleDTO> create(@Valid @RequestBody CreateScheduleDTO schedule){
-        ScheduleDTO newSchedule = scheduleService.save(schedule);
-        URI uri = URI.create("/schedule/" + newSchedule.id());
+    public ResponseEntity<List<ScheduleDTO>> create(@Valid @RequestBody CreateScheduleDTO schedule){
+        List<ScheduleDTO> newSchedule = scheduleService.save(schedule);
+        URI uri = URI.create("/schedule/" + newSchedule.get(0).placeId());
         return ResponseEntity.created(uri).body(newSchedule);
     }
 

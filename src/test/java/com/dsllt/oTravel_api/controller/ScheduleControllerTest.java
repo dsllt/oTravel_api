@@ -7,6 +7,7 @@ import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.core.usecase.ScheduleService;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
+import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleInfoDTO;
 import com.dsllt.oTravel_api.infra.enums.WeekDay;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -46,10 +49,7 @@ class ScheduleControllerTest {
     void testCreate() throws Exception {
         // Arrange
         CreateScheduleDTO newSchedule = new CreateScheduleDTO(
-                null,
-                null,
-                null,
-                null);
+                null,                null);
         String requestBody = objectMapper.writeValueAsString(newSchedule);
         // Act and assert
         mockMvc.perform(post("/api/v1/schedule")
@@ -64,22 +64,36 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate2() throws Exception {
         // Arrange
+        UUID placeUUID = UUID.randomUUID();
         Place place = Place.builder().build();
+        ScheduleInfoDTO scheduleInfo1 = new ScheduleInfoDTO(WeekDay.SUNDAY,
+                OffsetTime.now(),
+                OffsetTime.now());
+        ScheduleInfoDTO scheduleInfo2 = new ScheduleInfoDTO(WeekDay.MONDAY,
+                OffsetTime.now(),
+                OffsetTime.now());
+        List<ScheduleInfoDTO> schedulesInfo = new ArrayList<>();
+        schedulesInfo.add(scheduleInfo1);
+        schedulesInfo.add(scheduleInfo2);
         CreateScheduleDTO createScheduleDTO = new CreateScheduleDTO(
-                WeekDay.SUNDAY,
-                OffsetTime.now(),
-                OffsetTime.now(),
-                place);
-        Schedule newSchedule = new Schedule(createScheduleDTO);
-        ScheduleDTO newScheduleDTO = ScheduleDTO.from(newSchedule);
-        Mockito.when(scheduleService.save(Mockito.any(CreateScheduleDTO.class))).thenReturn(newScheduleDTO);
-        String requestBody = objectMapper.writeValueAsString(newScheduleDTO);
+                schedulesInfo,
+                placeUUID.toString()
+        );
+        Schedule newSchedule1 = new Schedule(scheduleInfo1, place);
+        Schedule newSchedule2 = new Schedule(scheduleInfo2, place);
+        ScheduleDTO newScheduleDTO1 = ScheduleDTO.from(newSchedule1);
+        ScheduleDTO newScheduleDTO2 = ScheduleDTO.from(newSchedule2);
+        List<ScheduleDTO> newSchedules = new ArrayList<>();
+        newSchedules.add(newScheduleDTO1);
+        newSchedules.add(newScheduleDTO2);
+        Mockito.when(scheduleService.save(createScheduleDTO)).thenReturn(newSchedules);
+        String requestBody = objectMapper.writeValueAsString(createScheduleDTO);
         // Act and assert
         mockMvc.perform(post("/api/v1/schedule")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(newSchedule.getId()))
+                .andExpect(jsonPath("$[0].placeId").value(newSchedules.get(0).placeId()))
                 .andDo(print());
         Mockito.verify(scheduleService, Mockito.times(1)).save(Mockito.any(CreateScheduleDTO.class));
     }
@@ -89,12 +103,20 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate3() throws Exception {
         // Arrange
-        Place place = Place.builder().id(UUID.randomUUID()).build();
+        UUID placeUUID = UUID.randomUUID();
+        ScheduleInfoDTO scheduleInfo1 = new ScheduleInfoDTO(WeekDay.SUNDAY,
+                OffsetTime.now(),
+                OffsetTime.now());
+        ScheduleInfoDTO scheduleInfo2 = new ScheduleInfoDTO(WeekDay.MONDAY,
+                OffsetTime.now(),
+                OffsetTime.now());
+        List<ScheduleInfoDTO> schedulesInfo = new ArrayList<>();
+        schedulesInfo.add(scheduleInfo1);
+        schedulesInfo.add(scheduleInfo2);
         CreateScheduleDTO newScheduleDTO = new CreateScheduleDTO(
-                WeekDay.SUNDAY,
-                OffsetTime.now(),
-                OffsetTime.now(),
-                place);
+                schedulesInfo,
+                placeUUID.toString()
+        );
         Mockito.when(scheduleService.save(Mockito.any(CreateScheduleDTO.class)))
                 .thenThrow(BusinessException.class);
         String requestBody = objectMapper.writeValueAsString(newScheduleDTO);
@@ -102,7 +124,7 @@ class ScheduleControllerTest {
         mockMvc.perform(post("/api/v1/schedule")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isConflict())
+                .andExpect(status().isBadRequest())
                 .andDo(print());
         Mockito.verify(scheduleService, Mockito.times(1)).save(Mockito.any(CreateScheduleDTO.class));
     }
@@ -112,31 +134,30 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testGet() throws Exception {
         // Arrange
-        UUID placeId = UUID.randomUUID();
-        Place place = Place.builder().id(placeId).build();
+        UUID placeUUID = UUID.randomUUID();
         ScheduleDTO sundaySchedule = new ScheduleDTO(
                 1L,
                 WeekDay.SUNDAY,
                 OffsetTime.now(),
                 OffsetTime.now(),
-                place);
+                placeUUID);
         ScheduleDTO mondaySchedule = new ScheduleDTO(
                 2L,
                 WeekDay.MONDAY,
                 OffsetTime.now(),
                 OffsetTime.now(),
-                place);
+                placeUUID);
         ScheduleDTO[] schedules = {sundaySchedule,mondaySchedule};
         String requestResponse = objectMapper.writeValueAsString(schedules);
-        Mockito.when(scheduleService.getByPlaceId(placeId))
+        Mockito.when(scheduleService.getByPlaceId(placeUUID))
                 .thenReturn(schedules);
         // Act and assert
-        mockMvc.perform(get("/api/v1/schedule/" + placeId)
+        mockMvc.perform(get("/api/v1/schedule/" + placeUUID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(requestResponse))
                 .andDo(print());
-        Mockito.verify(scheduleService, Mockito.times(1)).getByPlaceId(placeId);
+        Mockito.verify(scheduleService, Mockito.times(1)).getByPlaceId(placeUUID);
     }
 
     @Test
@@ -144,15 +165,15 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testGet2() throws Exception {
         // Arrange
-        UUID placeId = UUID.randomUUID();
-        Mockito.when(scheduleService.getByPlaceId(placeId))
+        UUID placeUUID = UUID.randomUUID();
+        Mockito.when(scheduleService.getByPlaceId(placeUUID))
                 .thenThrow(ObjectNotFoundException.class);
         // Act and assert
-        mockMvc.perform(get("/api/v1/schedule/" + placeId)
+        mockMvc.perform(get("/api/v1/schedule/" + placeUUID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andDo(print());
-        Mockito.verify(scheduleService, Mockito.times(1)).getByPlaceId(placeId);
+        Mockito.verify(scheduleService, Mockito.times(1)).getByPlaceId(placeUUID);
     }
 
     @Test
@@ -160,13 +181,13 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void update() throws Exception {
         // Arrange
-        Place place = Place.builder().id(UUID.randomUUID()).build();
+        UUID placeUUID = UUID.randomUUID();
         ScheduleDTO scheduleDTO = new ScheduleDTO(
                 1L,
                 WeekDay.SUNDAY,
                 OffsetTime.now(),
                 OffsetTime.now(),
-                place);
+                placeUUID);
         String requestBody = objectMapper.writeValueAsString(scheduleDTO);
         Mockito.when(scheduleService.update(Mockito.any(ScheduleDTO.class)))
                 .thenThrow(ObjectNotFoundException.class);
@@ -184,13 +205,13 @@ class ScheduleControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void update2() throws Exception {
         // Arrange
-        Place place = Place.builder().id(UUID.randomUUID()).build();
+        UUID placeUUID = UUID.randomUUID();
         ScheduleDTO scheduleDTO = new ScheduleDTO(
                 1L,
                 WeekDay.SUNDAY,
                 OffsetTime.now(),
                 OffsetTime.now(),
-                place);
+                placeUUID);
         String requestBody = objectMapper.writeValueAsString(scheduleDTO);
         Mockito.when(scheduleService.update(scheduleDTO))
                 .thenReturn(scheduleDTO);

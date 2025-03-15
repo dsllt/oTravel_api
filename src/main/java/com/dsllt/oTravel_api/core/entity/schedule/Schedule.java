@@ -1,20 +1,21 @@
 package com.dsllt.oTravel_api.core.entity.schedule;
 
 import com.dsllt.oTravel_api.core.entity.place.Place;
-import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
+import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleInfoDTO;
 import com.dsllt.oTravel_api.infra.enums.WeekDay;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "schedules")
@@ -38,19 +39,19 @@ public class Schedule {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public Schedule(CreateScheduleDTO scheduleDTO){
+    public Schedule(ScheduleInfoDTO scheduleDTO, Place place){
         this.weekDay = scheduleDTO.weekDay();
         this.openAt = scheduleDTO.openAt();
         this.closeAt = scheduleDTO.closeAt();
-        this.place= scheduleDTO.place();
+        this.place = place;
     }
 
-    public Schedule(ScheduleDTO scheduleDTO){
+    public Schedule(ScheduleDTO scheduleDTO, Place place){
         this.id = scheduleDTO.id();
         this.weekDay = scheduleDTO.weekDay();
         this.openAt = scheduleDTO.openAt();
         this.closeAt = scheduleDTO.closeAt();
-        this.place= scheduleDTO.place();
+        this.place = place;
         this.updatedAt = ZonedDateTime.now();
     }
 

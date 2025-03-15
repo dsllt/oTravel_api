@@ -1,15 +1,18 @@
 package com.dsllt.oTravel_api.core.usecase;
 
+import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.entity.schedule.Schedule;
 import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.infra.dto.schedule.CreateScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
+import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import com.dsllt.oTravel_api.infra.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,32 +20,42 @@ public class ScheduleService {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
+    @Autowired
+    private PlaceRepository placeRepository;
 
-    public ScheduleDTO save(CreateScheduleDTO scheduleDTO){
-        if(scheduleRepository.existsByWeekDayAndPlaceId(scheduleDTO.weekDay(), scheduleDTO.place().getId())){
-            String message = String.format("Horário %s já cadastrado para %s.", scheduleDTO.weekDay(), scheduleDTO.place().getName());
-            throw new BusinessException(message);
-        }
-        Schedule schedule = new Schedule(scheduleDTO);
-        Schedule persistedSchedule = scheduleRepository.save(schedule);
-        return ScheduleDTO.from(persistedSchedule);
+    public List<ScheduleDTO> save(CreateScheduleDTO scheduleDTO){
+        UUID placeUUID = UUID.fromString(scheduleDTO.placeId());
+        Place place = placeRepository.findById(placeUUID).orElseThrow(() -> new ObjectNotFoundException("Local não encontrado"));
+        List<Schedule> savedScheduleList = new ArrayList<>();
+        scheduleDTO.scheduleInfo().forEach(schedule -> {
+            if(scheduleRepository.existsByWeekDayAndPlaceId(schedule.weekDay(), placeUUID)){
+                String message = String.format("Horário %s já cadastrado para %s.", schedule.weekDay(), scheduleDTO.placeId());
+                throw new BusinessException(message);
+            }
+            Schedule newSchedule = new Schedule(schedule, place);
+            Schedule persistedSchedule = scheduleRepository.save(newSchedule);
+            savedScheduleList.add(persistedSchedule);
+        });
+
+        return savedScheduleList.stream().map(ScheduleDTO::from).toList();
     }
 
     public ScheduleDTO[] getByPlaceId(UUID placeId){
-        if(scheduleRepository.existsByPlaceId(placeId)){
+        if(!scheduleRepository.existsByPlaceId(placeId)){
             throw new ObjectNotFoundException("Horários não encontrados para este local.");
         }
-        Schedule[] schedules = scheduleRepository.findByPlaceId(placeId);
-      return Arrays.stream(schedules)
+        List<Schedule> schedules = scheduleRepository.findByPlaceId(placeId);
+        return schedules.stream()
               .map(ScheduleDTO::from)
               .toArray(ScheduleDTO[]::new);
     }
 
     public ScheduleDTO update(ScheduleDTO scheduleDTO){
-        if(!scheduleRepository.existsByPlaceId(scheduleDTO.place().getId())){
+        Place place = placeRepository.findById(scheduleDTO.placeId()).orElseThrow(() -> new ObjectNotFoundException("Local não encontrado"));
+        if(!scheduleRepository.existsByPlaceId(scheduleDTO.placeId())){
             throw new ObjectNotFoundException("Horários não encontrados para este local.");
         }
-        Schedule schedule = new Schedule(scheduleDTO);
+        Schedule schedule = new Schedule(scheduleDTO, place);
         Schedule updatedSchedule = scheduleRepository.save(schedule);
         return ScheduleDTO.from(updatedSchedule);
     }
