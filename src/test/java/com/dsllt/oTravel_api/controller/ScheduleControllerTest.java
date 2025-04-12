@@ -10,6 +10,7 @@ import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleDTO;
 import com.dsllt.oTravel_api.infra.dto.schedule.ScheduleInfoDTO;
 import com.dsllt.oTravel_api.infra.enums.WeekDay;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,6 +44,17 @@ class ScheduleControllerTest {
     ObjectMapper objectMapper;
     @MockBean
     private ScheduleService scheduleService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
+    }
 
     @Test
     @DisplayName("Should return status code 400 when trying to create schedule with invalid data")

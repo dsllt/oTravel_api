@@ -6,6 +6,7 @@ import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.core.usecase.MenuService;
 import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
+import com.dsllt.oTravel_api.infra.dto.menu.EditMenuDTO;
 import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
 import com.dsllt.oTravel_api.infra.enums.MenuType;
 import com.dsllt.oTravel_api.infra.repository.MenuRepository;
@@ -137,18 +138,15 @@ class MenuServiceTest {
         // Arrange
         UUID placeUUID = UUID.randomUUID();
         Place place = Place.builder().id(placeUUID).build();
-        MenuDTO menuDTO = new MenuDTO(
-                1L,
+        EditMenuDTO editMenuDTO = new EditMenuDTO(
                 "Batata",
-                MenuType.FOOD,
-                25.00,
-                placeUUID);
+                25.00);
         Mockito.when(placeRepository.findById(placeUUID))
                 .thenReturn(Optional.ofNullable(place));
         Mockito.when(menuRepository.existsByPlaceId(placeUUID))
                 .thenReturn(false);
         // Act
-        Throwable exception = catchException(() -> menuService.update(menuDTO));
+        Throwable exception = catchException(() -> menuService.update(1L, editMenuDTO));
         // Assert
         assertThat(exception).isInstanceOf(ObjectNotFoundException.class)
                 .hasMessage("Menus não encontrados para este local.");
@@ -166,6 +164,9 @@ class MenuServiceTest {
                 MenuType.FOOD,
                 25.00,
                 placeUUID);
+        EditMenuDTO editMenuDTO = new EditMenuDTO(
+                "Batata",
+                25.00);
         Menu persistedMenu = new Menu(menuDTO, place);
         Mockito.when(placeRepository.findById(placeUUID))
                 .thenReturn(Optional.ofNullable(place));
@@ -174,10 +175,10 @@ class MenuServiceTest {
         Mockito.when(menuRepository.save(Mockito.any(Menu.class)))
                 .thenReturn(persistedMenu);
         // Act
-        MenuDTO updatedMenu = menuService.update(menuDTO);
+        MenuDTO updatedMenu = menuService.update(1L, editMenuDTO);
         // Assert
         Assertions.assertNotNull(updatedMenu);
-        Assertions.assertEquals(updatedMenu.id(),menuDTO.id());
-        Assertions.assertEquals(updatedMenu.name(),menuDTO.name());
+        Assertions.assertEquals(1L, updatedMenu.id());
+        Assertions.assertEquals(editMenuDTO.name(), updatedMenu.name());
     }
 }

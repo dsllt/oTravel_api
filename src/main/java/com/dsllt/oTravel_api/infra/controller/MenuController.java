@@ -2,6 +2,7 @@ package com.dsllt.oTravel_api.infra.controller;
 
 import com.dsllt.oTravel_api.core.usecase.MenuService;
 import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
+import com.dsllt.oTravel_api.infra.dto.menu.EditMenuDTO;
 import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
@@ -38,9 +39,15 @@ public class MenuController {
         return ResponseEntity.ok().body(menus);
     }
 
-    @PutMapping
-    public ResponseEntity<MenuDTO> update(@Valid @RequestBody MenuDTO menu){
-        MenuDTO updatedMenu = menuService.update(menu);
+    @PutMapping("/{itemId}")
+    public ResponseEntity<MenuDTO> update(@Nonnull @PathVariable Long itemId, @Valid @RequestBody EditMenuDTO menu){
+        MenuDTO updatedMenu = menuService.update(itemId, menu);
         return ResponseEntity.ok().body(updatedMenu);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<Void> delete(@Nonnull @PathVariable Long itemId ){
+        menuService.delete(itemId);
+        return ResponseEntity.noContent().build();
     }
 }

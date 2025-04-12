@@ -6,9 +6,11 @@ import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.core.usecase.MenuService;
 import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
+import com.dsllt.oTravel_api.infra.dto.menu.EditMenuDTO;
 import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
 import com.dsllt.oTravel_api.infra.enums.MenuType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,9 +19,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,17 @@ class MenuControllerTest {
     ObjectMapper objectMapper;
     @MockBean
     private MenuService menuService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
+    }
 
     @Test
     @DisplayName("Should return status code 400 when trying to create a menu with invalid data")
@@ -65,7 +80,8 @@ class MenuControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate2() throws Exception {
         // Arrange
-        Place place = Place.builder().build();
+        UUID placeUUID = UUID.randomUUID();
+        Place place = Place.builder().id(placeUUID).build();
         CreateMenuDTO createMenuDTO = new CreateMenuDTO(
                 "Batata",
                 MenuType.FOOD,
@@ -90,7 +106,8 @@ class MenuControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void testCreate3() throws Exception {
         // Arrange
-        Place place = Place.builder().build();
+        UUID placeUUID = UUID.randomUUID();
+        Place place = Place.builder().id(placeUUID).build();
         CreateMenuDTO createMenuDTO = new CreateMenuDTO(
                 "Batata",
                 MenuType.FOOD,
@@ -164,23 +181,19 @@ class MenuControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void update() throws Exception {
         // Arrange
-        Place place = Place.builder().id(UUID.randomUUID()).build();
-        MenuDTO menuDTO = new MenuDTO(
-                1L,
+        EditMenuDTO editMenuDTO = new EditMenuDTO(
                 "Batata",
-                MenuType.FOOD,
-                25.00,
-                place.getId());
-        String requestBody = objectMapper.writeValueAsString(menuDTO);
-        Mockito.when(menuService.update(Mockito.any(MenuDTO.class)))
+                25.00);
+        String requestBody = objectMapper.writeValueAsString(editMenuDTO);
+        Mockito.when(menuService.update(1L, editMenuDTO))
                 .thenThrow(ObjectNotFoundException.class);
         // Act and assert
-        mockMvc.perform(put("/api/v1/menu")
+        mockMvc.perform(put("/api/v1/menu/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound())
                 .andDo(print());
-        Mockito.verify(menuService, Mockito.times(1)).update(Mockito.any(MenuDTO.class));
+        Mockito.verify(menuService, Mockito.times(1)).update(1L, editMenuDTO);
     }
 
     @Test
@@ -188,22 +201,37 @@ class MenuControllerTest {
     @WithMockUser(value = "john", authorities = "ROLE_USER")
     void update2() throws Exception {
         // Arrange
-        Place place = Place.builder().id(UUID.randomUUID()).build();
+        UUID placeUUID = UUID.randomUUID();
+        Place place = Place.builder().id(placeUUID).build();
         MenuDTO menuDTO = new MenuDTO(
                 1L,
                 "Batata",
                 MenuType.FOOD,
                 25.00,
                 place.getId());
-        String requestBody = objectMapper.writeValueAsString(menuDTO);
-        Mockito.when(menuService.update(menuDTO))
+        EditMenuDTO editMenu = new EditMenuDTO(
+                "Batata",
+                25.00);
+        String requestBody = objectMapper.writeValueAsString(editMenu);
+        Mockito.when(menuService.update(1L, editMenu))
                 .thenReturn(menuDTO);
         // Act and assert
-        mockMvc.perform(put("/api/v1/menu")
+        mockMvc.perform(put("/api/v1/menu/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andDo(print());
-        Mockito.verify(menuService, Mockito.times(1)).update(Mockito.any(MenuDTO.class));
+        Mockito.verify(menuService, Mockito.times(1)).update(1L, editMenu);
+    }
+
+    @Test
+    @DisplayName("Should allow to delete a menu")
+    @WithMockUser(value = "john", authorities = "ROLE_USER")
+    void delete() throws Exception {
+        // Act and assert
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/menu/1"))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        Mockito.verify(menuService, Mockito.times(1)).delete(1L);
     }
 }

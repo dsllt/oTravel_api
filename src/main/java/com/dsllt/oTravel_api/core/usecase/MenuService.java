@@ -5,6 +5,7 @@ import com.dsllt.oTravel_api.core.entity.place.Place;
 import com.dsllt.oTravel_api.core.exceptions.BusinessException;
 import com.dsllt.oTravel_api.core.exceptions.ObjectNotFoundException;
 import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
+import com.dsllt.oTravel_api.infra.dto.menu.EditMenuDTO;
 import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
 import com.dsllt.oTravel_api.infra.repository.MenuRepository;
 import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
@@ -45,13 +46,15 @@ public class MenuService {
                 .toArray(MenuDTO[]::new));
     }
 
-    public MenuDTO update(MenuDTO menuDTO){
-        Place place = placeRepository.findById(menuDTO.placeId()).orElseThrow(() -> new ObjectNotFoundException("Local não encontrado."));
-        if(!menuRepository.existsByPlaceId(menuDTO.placeId())){
-            throw new ObjectNotFoundException("Menus não encontrados para este local.");
-        }
-        Menu menu = new Menu(menuDTO, place);
-        Menu updatedMenu = menuRepository.save(menu);
+    public MenuDTO update(Long itemId, EditMenuDTO menu){
+        Menu retrievedMenu = menuRepository.findById(itemId).orElseThrow(() -> new ObjectNotFoundException("Menu não encontrado."));
+        retrievedMenu.setName(menu.name());
+        retrievedMenu.setPrice(menu.price());
+        Menu updatedMenu = menuRepository.save(retrievedMenu);
         return MenuDTO.from(updatedMenu);
+    }
+
+    public void delete(Long itemId) {
+        menuRepository.deleteById(itemId);
     }
 }

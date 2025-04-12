@@ -41,12 +41,14 @@ class PlaceControllerTest {
     PlaceRepository placeRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void cleanDatabase() {
         jdbcTemplate.execute("DELETE FROM favorites");
         jdbcTemplate.execute("DELETE FROM reviews");
         jdbcTemplate.execute("DELETE FROM places");
         jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
     }
 
     @Test

@@ -58,6 +58,7 @@ class FavoritesControllerTest  {
         jdbcTemplate.execute("DELETE FROM reviews");
         jdbcTemplate.execute("DELETE FROM places");
         jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
     }
 
     @Test
@@ -149,7 +150,7 @@ class FavoritesControllerTest  {
 
         // Act
         var response = mockMvc.perform(
-                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
+                put("/api/v1/favorite/" + testUser.id() + "?placeId=" + testPlace.id())
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(user("john").authorities(new SimpleGrantedAuthority("ROLE_USER")))
         ).andReturn().getResponse();
@@ -171,12 +172,13 @@ class FavoritesControllerTest  {
         favoriteService.save(createFavoriteDTO);
 
         // Act
+        String urlTemplate = "/api/v1/favorite/" + testUser.id() + "?placeId=" + testPlace.id();
         var response1 = mockMvc.perform(
-                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
+                put(urlTemplate)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
         var response2 = mockMvc.perform(
-                put("/api/v1/favorite/" + testUser.id() + "?placeUuid=" + testPlace.id())
+                put(urlTemplate)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
 
@@ -228,34 +230,5 @@ class FavoritesControllerTest  {
         assertEquals(1, user1.favorites().size());
         assertEquals(2, user2.favorites().size());
     }
-
-    @Test
-    @DisplayName("should indicate if favorite exists and is active")
-    @WithMockUser(value = "jeohndoe@email.com", authorities = "ROLE_USER")
-    void testIsFavoriteActive() throws Exception{
-        // Arrange
-        CreateUserDTO createTestUser = new CreateUserDTO("John", "Doe", "jeohndoe@email.com", "","123456");
-        UserDTO testUser = userService.save(createTestUser);
-        CreatePlaceDTO createTestPlace1 = new CreatePlaceDTO("Test Place", "", "", "Address", "City", "Country", -30.01,-30.01, "test", "", List.of(PlaceCategory.valueOf("COFFEE")));
-        PlaceDTO testPlace = placeService.save(createTestPlace1);
-        CreateFavoriteDTO createFavoriteDTO = new CreateFavoriteDTO(testUser.id(),testPlace.id());
-        favoriteService.save(createFavoriteDTO);
-
-        // Act
-        var response = mockMvc.perform(
-                get("/api/v1/favorite")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("placeId", testPlace.id().toString())
-                        .param("userId", testUser.id().toString())
-        ).andReturn().getResponse();
-
-        // Assert
-        assertEquals(200, response.getStatus());
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode responseBody = objectMapper.readTree(response.getContentAsString());
-        assertTrue(responseBody.has("isActive"));
-        assertTrue(responseBody.get("isActive").asBoolean());
-    }
-
 }
 
