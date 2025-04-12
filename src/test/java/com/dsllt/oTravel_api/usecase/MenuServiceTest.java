@@ -9,6 +9,7 @@ import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
 import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
 import com.dsllt.oTravel_api.infra.enums.MenuType;
 import com.dsllt.oTravel_api.infra.repository.MenuRepository;
+import com.dsllt.oTravel_api.infra.repository.PlaceRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
@@ -32,6 +32,8 @@ class MenuServiceTest {
 
     @Mock
     MenuRepository menuRepository;
+    @Mock
+    PlaceRepository placeRepository;
     @InjectMocks
     MenuService menuService;
 
@@ -44,7 +46,7 @@ class MenuServiceTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                place.getId());
         Mockito.when(menuRepository.existsByNameAndPlaceId(Mockito.any(String.class), Mockito.any(UUID.class)))
                 .thenReturn(true);
         // Act
@@ -62,8 +64,8 @@ class MenuServiceTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
-        Menu persistedMenu = new Menu(createMenuDTO);
+                place.getId());
+        Menu persistedMenu = new Menu(createMenuDTO, place);
         Mockito.when(menuRepository.save(Mockito.any(Menu.class)))
                 .thenReturn(persistedMenu);
         // Act
@@ -81,7 +83,7 @@ class MenuServiceTest {
         // Arrange
         UUID placeUUID = UUID.randomUUID();
         Mockito.when(menuRepository.existsByPlaceId(placeUUID))
-                .thenReturn(true);
+                .thenReturn(false);
         // Act
         Throwable exception = catchException(() -> menuService.getByPlaceId(placeUUID));
         // Assert
@@ -111,18 +113,22 @@ class MenuServiceTest {
                 place,
                 ZonedDateTime.now(),
                 ZonedDateTime.now());
-        Menu[] persistedMenus = {persistedMenu,persistedMenu2};
-        MenuDTO[] persistedMenusDTO = Arrays.stream(persistedMenus)
-                        .map(MenuDTO::from)
-                        .toArray(MenuDTO[]::new);
-        Mockito.when(menuRepository.findByPlaceId(placeUUID))
+        List<Menu> persistedMenus = new ArrayList<>();
+        persistedMenus.add(persistedMenu);
+        persistedMenus.add(persistedMenu2);
+        List<MenuDTO> persistedMenusDTO = List.of(persistedMenus.stream()
+                .map(MenuDTO::from)
+                .toArray(MenuDTO[]::new));
+        Mockito.when(menuRepository.existsByPlaceId(placeUUID))
+                .thenReturn(true);
+        Mockito.when(menuRepository.findAllByPlaceId(placeUUID))
                 .thenReturn(persistedMenus);
         // Act
-        MenuDTO[] savedMenus = menuService.getByPlaceId(placeUUID);
+        List<MenuDTO> savedMenus = menuService.getByPlaceId(placeUUID);
         // Assert
         Assertions.assertNotNull(savedMenus);
-        Assertions.assertEquals(savedMenus.length, persistedMenusDTO.length);
-        Assertions.assertArrayEquals(savedMenus, persistedMenusDTO);
+        Assertions.assertEquals(savedMenus.size(), persistedMenusDTO.size());
+        Assertions.assertEquals(savedMenus, persistedMenusDTO);
     }
 
     @Test
@@ -136,7 +142,9 @@ class MenuServiceTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                placeUUID);
+        Mockito.when(placeRepository.findById(placeUUID))
+                .thenReturn(Optional.ofNullable(place));
         Mockito.when(menuRepository.existsByPlaceId(placeUUID))
                 .thenReturn(false);
         // Act
@@ -157,8 +165,10 @@ class MenuServiceTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
-        Menu persistedMenu = new Menu(menuDTO);
+                placeUUID);
+        Menu persistedMenu = new Menu(menuDTO, place);
+        Mockito.when(placeRepository.findById(placeUUID))
+                .thenReturn(Optional.ofNullable(place));
         Mockito.when(menuRepository.existsByPlaceId(placeUUID))
                 .thenReturn(true);
         Mockito.when(menuRepository.save(Mockito.any(Menu.class)))

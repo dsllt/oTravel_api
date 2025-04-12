@@ -21,6 +21,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -68,8 +70,8 @@ class MenuControllerTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
-        Menu newMenu = new Menu(createMenuDTO);
+                place.getId());
+        Menu newMenu = new Menu(createMenuDTO, place);
         MenuDTO newMenuDTO = MenuDTO.from(newMenu);
         Mockito.when(menuService.save(Mockito.any(CreateMenuDTO.class))).thenReturn(newMenuDTO);
         String requestBody = objectMapper.writeValueAsString(createMenuDTO);
@@ -93,7 +95,7 @@ class MenuControllerTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                place.getId());
         Mockito.when(menuService.save(Mockito.any(CreateMenuDTO.class)))
                 .thenThrow(BusinessException.class);
         String requestBody = objectMapper.writeValueAsString(createMenuDTO);
@@ -118,14 +120,17 @@ class MenuControllerTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                placeId);
         MenuDTO menuDTO2 = new MenuDTO(
                 1L,
                 "Arroz",
                 MenuType.FOOD,
                 25.00,
-                place);
-        MenuDTO[] menus = {menuDTO,menuDTO2};
+                placeId);
+
+        List<MenuDTO> menus = new ArrayList<>();
+        menus.add(menuDTO);
+        menus.add(menuDTO2);
         String requestResponse = objectMapper.writeValueAsString(menus);
         Mockito.when(menuService.getByPlaceId(placeId))
                 .thenReturn(menus);
@@ -165,7 +170,7 @@ class MenuControllerTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                place.getId());
         String requestBody = objectMapper.writeValueAsString(menuDTO);
         Mockito.when(menuService.update(Mockito.any(MenuDTO.class)))
                 .thenThrow(ObjectNotFoundException.class);
@@ -189,7 +194,7 @@ class MenuControllerTest {
                 "Batata",
                 MenuType.FOOD,
                 25.00,
-                place);
+                place.getId());
         String requestBody = objectMapper.writeValueAsString(menuDTO);
         Mockito.when(menuService.update(menuDTO))
                 .thenReturn(menuDTO);

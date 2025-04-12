@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,14 +27,14 @@ public class MenuController {
     @PostMapping
     public ResponseEntity<MenuDTO> create(@Valid @RequestBody CreateMenuDTO menu){
         MenuDTO newMenu = menuService.save(menu);
-        URI uri = URI.create("/schedule/" + newMenu.id());
+        URI uri = URI.create("/menu/" + newMenu.id());
         return ResponseEntity.created(uri).body(newMenu);
     }
 
 
     @GetMapping("/{placeUuid}")
-    public ResponseEntity<MenuDTO[]> getByPlaceId(@Nonnull @PathVariable UUID placeUuid){
-        MenuDTO[] menus = menuService.getByPlaceId(placeUuid);
+    public ResponseEntity<List<MenuDTO>> getByPlaceId(@Nonnull @PathVariable UUID placeUuid){
+        List<MenuDTO> menus = menuService.getByPlaceId(placeUuid);
         return ResponseEntity.ok().body(menus);
     }
 

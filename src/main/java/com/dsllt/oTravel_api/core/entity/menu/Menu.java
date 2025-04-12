@@ -8,11 +8,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "menus")
@@ -27,27 +29,27 @@ public class Menu {
     private MenuType type;
     @Column(name = "price")
     private Double price;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "place_id", nullable = false)
     private Place place;
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public Menu(CreateMenuDTO createMenuDTO){
+    public Menu(CreateMenuDTO createMenuDTO, Place place){
         this.name = createMenuDTO.name();
         this.type = createMenuDTO.type();
         this.price = createMenuDTO.price();
-        this.place = createMenuDTO.place();
+        this.place = place;
     }
 
-    public Menu(MenuDTO menuDTO){
+    public Menu(MenuDTO menuDTO, Place place){
         this.id = menuDTO.id();
         this.name = menuDTO.name();
         this.type = menuDTO.type();
         this.price = menuDTO.price();
-        this.place = menuDTO.place();
+        this.place = place;
         this.updatedAt = ZonedDateTime.now();
     }
 }
