@@ -1,8 +1,7 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.in.web;
 
-import com.dsllt.oTravel_api.domain.port.in.CreateScheduleUseCase;
-import com.dsllt.oTravel_api.domain.port.in.ScheduleUseCase;
-import com.dsllt.oTravel_api.domain.service.ScheduleService;
+import com.dsllt.oTravel_api.domain.schedule.port.in.CreateScheduleUseCase;
+import com.dsllt.oTravel_api.domain.schedule.port.in.ScheduleUseCase;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.CreateScheduleRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.ScheduleResponseOut;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.UpdateScheduleRequestIn;

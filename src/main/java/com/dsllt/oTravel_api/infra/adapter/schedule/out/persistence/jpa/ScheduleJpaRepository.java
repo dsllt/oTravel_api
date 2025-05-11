@@ -1,6 +1,6 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.out.persistence.jpa;
 
-import com.dsllt.oTravel_api.domain.model.schedule.WeekDay;
+import com.dsllt.oTravel_api.domain.schedule.model.WeekDay;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

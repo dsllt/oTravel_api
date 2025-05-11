@@ -1,7 +1,6 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.in.web.mapper;
 
-import com.dsllt.oTravel_api.domain.model.schedule.Schedule;
-import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.ScheduleResponseOut;
+import com.dsllt.oTravel_api.domain.schedule.model.Schedule;
 import com.dsllt.oTravel_api.infra.adapter.schedule.out.persistence.jpa.ScheduleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

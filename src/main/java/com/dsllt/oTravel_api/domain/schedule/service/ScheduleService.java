@@ -1,11 +1,11 @@
-package com.dsllt.oTravel_api.domain.service;
+package com.dsllt.oTravel_api.domain.schedule.service;
 
-import com.dsllt.oTravel_api.domain.model.schedule.Schedule;
-import com.dsllt.oTravel_api.domain.port.in.CreateScheduleUseCase;
-import com.dsllt.oTravel_api.domain.port.in.ScheduleUseCase;
-import com.dsllt.oTravel_api.domain.port.out.CreateSchedulePort;
-import com.dsllt.oTravel_api.domain.port.out.GetSchedulePort;
-import com.dsllt.oTravel_api.domain.port.out.UpdateSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.model.Schedule;
+import com.dsllt.oTravel_api.domain.schedule.port.in.CreateScheduleUseCase;
+import com.dsllt.oTravel_api.domain.schedule.port.in.ScheduleUseCase;
+import com.dsllt.oTravel_api.domain.schedule.port.out.CreateSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.port.out.GetSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.port.out.UpdateSchedulePort;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.mapper.ScheduleResponseOutMapper;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.CreateScheduleRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.ScheduleResponseOut;

@@ -1,7 +1,6 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.out.persistence.jpa;
 
-import com.dsllt.oTravel_api.domain.model.place.Place;
-import com.dsllt.oTravel_api.domain.model.schedule.WeekDay;
+import com.dsllt.oTravel_api.domain.schedule.model.WeekDay;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

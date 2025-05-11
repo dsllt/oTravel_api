@@ -1,10 +1,9 @@
-package com.dsllt.oTravel_api.domain.port.out;
+package com.dsllt.oTravel_api.domain.schedule.port.out;
 
-import com.dsllt.oTravel_api.domain.model.schedule.Schedule;
+import com.dsllt.oTravel_api.domain.schedule.model.Schedule;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.UpdateScheduleRequestIn;
 
 import java.util.List;
-import java.util.UUID;
 
 @FunctionalInterface
 public interface UpdateSchedulePort {

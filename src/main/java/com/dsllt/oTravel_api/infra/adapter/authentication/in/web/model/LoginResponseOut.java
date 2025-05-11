@@ -1,5 +1,8 @@
-package com.dsllt.oTravel_api.infra.dto;
+package com.dsllt.oTravel_api.infra.adapter.authentication.in.web.model;
+
+import lombok.Builder;
 
 import java.util.UUID;
 
-public record LoginResponseDTO(String token, UUID userId) {}
+@Builder(toBuilder = true)
+public record LoginResponseOut(String token, UUID userId) {}

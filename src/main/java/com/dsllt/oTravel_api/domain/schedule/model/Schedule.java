@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.domain.model.schedule;
+package com.dsllt.oTravel_api.domain.schedule.model;
 
 import lombok.Builder;
 

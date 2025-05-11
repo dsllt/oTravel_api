@@ -1,9 +1,9 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.out.persistence;
 
-import com.dsllt.oTravel_api.domain.model.schedule.Schedule;
-import com.dsllt.oTravel_api.domain.port.out.CreateSchedulePort;
-import com.dsllt.oTravel_api.domain.port.out.GetSchedulePort;
-import com.dsllt.oTravel_api.domain.port.out.UpdateSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.model.Schedule;
+import com.dsllt.oTravel_api.domain.schedule.port.out.CreateSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.port.out.GetSchedulePort;
+import com.dsllt.oTravel_api.domain.schedule.port.out.UpdateSchedulePort;
 import com.dsllt.oTravel_api.infra.adapter.place.out.persistence.jpa.PlaceJpaRepository;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.mapper.ScheduleMapper;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.CreateScheduleRequestIn;

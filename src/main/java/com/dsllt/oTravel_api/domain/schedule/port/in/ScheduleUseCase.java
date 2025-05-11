@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.domain.port.in;
+package com.dsllt.oTravel_api.domain.schedule.port.in;
 
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.ScheduleResponseOut;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.UpdateScheduleRequestIn;
