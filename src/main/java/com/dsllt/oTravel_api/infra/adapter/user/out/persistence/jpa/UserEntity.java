@@ -1,9 +1,6 @@
-package com.dsllt.oTravel_api.core.entity.user;
+package com.dsllt.oTravel_api.infra.adapter.user.out.persistence.jpa;
 
-import com.dsllt.oTravel_api.core.entity.favorite.Favorite;
-import com.dsllt.oTravel_api.core.entity.review.Review;
-import com.dsllt.oTravel_api.infra.dto.user.CreateUserDTO;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.dsllt.oTravel_api.domain.user.model.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +20,7 @@ import java.util.UUID;
 @Builder
 @Table(name = "users")
 @EqualsAndHashCode(of = "id")
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -50,17 +47,6 @@ public class User implements UserDetails {
         return email;
     }
 
-    public static User createNewUserFromCreateUserDTO(CreateUserDTO createUserDTO){
-        User user = new User();
-        user.setFirstName(createUserDTO.firstName());
-        user.setLastName(createUserDTO.lastName());
-        user.setEmail(createUserDTO.email());
-        user.setPassword(createUserDTO.password());
-        user.setImage(createUserDTO.image());
-        user.setRole(UserRole.USER);
-        return user;
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -80,5 +66,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

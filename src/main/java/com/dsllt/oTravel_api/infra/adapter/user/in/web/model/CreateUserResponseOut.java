@@ -1,10 +1,11 @@
-package com.dsllt.oTravel_api.infra.adapter.authentication.in.web.model;
+package com.dsllt.oTravel_api.infra.adapter.user.in.web.model;
 
-import com.dsllt.oTravel_api.domain.model.user.User;
-import com.dsllt.oTravel_api.domain.model.user.UserRole;
+import com.dsllt.oTravel_api.domain.user.model.UserRole;
+import lombok.Builder;
 
 import java.util.UUID;
 
+@Builder(toBuilder = true)
 public record CreateUserResponseOut(
         UUID id,
         String firstName,
@@ -12,9 +13,5 @@ public record CreateUserResponseOut(
         String email,
         String image,
         UserRole role
-
 ) {
-    public CreateUserResponseOut(User user) {
-        this(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getImage(), user.getRole());
-    }
 }
