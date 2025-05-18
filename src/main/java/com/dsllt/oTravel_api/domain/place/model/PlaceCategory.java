@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.infra.enums;
+package com.dsllt.oTravel_api.domain.place.model;
 
 public enum PlaceCategory {
     COFFEE,

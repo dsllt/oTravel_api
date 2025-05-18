@@ -1,14 +1,15 @@
-package com.dsllt.oTravel_api.infra.adapter.in.web.controller;
+package com.dsllt.oTravel_api.infra.adapter.place.in.web;
 
-import com.dsllt.oTravel_api.domain.service.PlaceService;
+import com.dsllt.oTravel_api.domain.place.service.PlaceService;
 import com.dsllt.oTravel_api.domain.model.CustomPage;
-import com.dsllt.oTravel_api.infra.enums.PlaceCategory;
-import com.dsllt.oTravel_api.infra.dto.place.CreatePlaceDTO;
-import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
-import com.dsllt.oTravel_api.domain.model.place.PlaceFilter;
+import com.dsllt.oTravel_api.domain.place.model.PlaceCategory;
+import com.dsllt.oTravel_api.infra.adapter.place.in.web.mapper.PlaceResponseOutMapper;
+import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.CreatePlaceRequestIn;
+import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.PlaceResponseOut;
+import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.UpdatePlaceRequestIn;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,74 +17,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/place")
 public class PlaceController {
 
     private final PlaceService placeService;
-
-    @Autowired
-    public PlaceController(PlaceService placeService){
-        this.placeService = placeService;
-    }
+    private final PlaceResponseOutMapper createPlaceResponseOutMapper;
 
     @PostMapping
-    public ResponseEntity<PlaceDTO> create(@RequestBody @Valid CreatePlaceDTO createPlaceDTO, UriComponentsBuilder uriComponentsBuilder){
-        PlaceDTO newPlace = placeService.save(createPlaceDTO);
-
-        var uri = uriComponentsBuilder.path("/api/v1/place/{placeUuid}").buildAndExpand(newPlace.id()).toUri();
-
-        return ResponseEntity.created(uri).body(newPlace);
+    public ResponseEntity<PlaceResponseOut> create(@RequestBody @Valid CreatePlaceRequestIn createPlaceRequestIn,
+                                                   UriComponentsBuilder uriComponentsBuilder){
+        var newPlace = placeService.create(createPlaceRequestIn);
+        var placeResponseOut = createPlaceResponseOutMapper.toPlaceResponseOut(newPlace);
+        var uri = URI.create("/place/" + placeResponseOut.id());
+        return ResponseEntity.created(uri).body(placeResponseOut);
     }
 
     @GetMapping
-    public  ResponseEntity<List<PlaceDTO>> get(){
-        List<PlaceDTO> retrievedPlaces = placeService.get();
-
+    public  ResponseEntity<List<PlaceResponseOut>> get(){
+        List<PlaceResponseOut> retrievedPlaces = placeService.get();
         return ResponseEntity.ok().body(retrievedPlaces);
     }
 
     @GetMapping("/{placeUuid}")
-    public  ResponseEntity<PlaceDTO> getPlaceById(@Nonnull @PathVariable UUID placeUuid){
-        PlaceDTO retrievedPlace = placeService.getPlaceById(placeUuid);
-
+    public  ResponseEntity<PlaceResponseOut> getPlaceById(@Nonnull @PathVariable UUID placeUuid){
+        var retrievedPlace = placeService.getById(placeUuid);
         return ResponseEntity.ok().body(retrievedPlace);
     }
 
-    @GetMapping("/filter")
-    public  ResponseEntity<CustomPage<PlaceDTO>> filter(
-            @RequestParam(required = false) UUID placeUuid,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String country,
-            @RequestParam(required = false) List<PlaceCategory> category,
-            @RequestParam(required = false) String slug,
-            @RequestParam(required = false) Double rating,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer perPage,
-
-            @RequestParam(required = false, defaultValue = "name") String sortBy,
-            @RequestParam(required = false, defaultValue = "DESC") Sort.Direction direction
-    ){
-        int pageNumber = (page != null) ? page : 0;
-        int pageSize = (perPage != null) ? perPage : Integer.MAX_VALUE;
-        Sort sort = Sort.by(direction, sortBy);
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-
-        PlaceFilter placeFilter = new PlaceFilter(placeUuid, name, city, country, category, slug, rating);
-
-        CustomPage<PlaceDTO> places = placeService.filter(placeFilter, pageable);
-
-        return ResponseEntity.ok().body(places);
-    }
-
     @PutMapping("/{placeUuid}")
-    public ResponseEntity<PlaceDTO> updatePlace(@Nonnull @PathVariable UUID placeUuid, @RequestBody PlaceDTO placeDTO){
-        PlaceDTO updatedPlace = placeService.updatePlace(placeUuid, placeDTO);
-
+    public ResponseEntity<PlaceResponseOut> updatePlace(@Nonnull @PathVariable UUID placeUuid,
+                                                        @RequestBody UpdatePlaceRequestIn updatePlaceRequestIn){
+        var updatedPlace = placeService.update(placeUuid, updatePlaceRequestIn);
         return ResponseEntity.ok().body(updatedPlace);
     }
 }
