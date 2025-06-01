@@ -1,19 +1,14 @@
-package com.dsllt.oTravel_api.infra.dto.favorite;
+package com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model;
 
-import com.dsllt.oTravel_api.domain.model.place.Place;
-import com.dsllt.oTravel_api.domain.model.user.User;
-import com.dsllt.oTravel_api.infra.dto.place.PlaceDTO;
-import com.dsllt.oTravel_api.infra.dto.user.UserDTO;
+import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.PlaceResponseOut;
+import com.dsllt.oTravel_api.infra.adapter.user.in.web.model.CreateUserResponseOut;
+import lombok.Builder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public record UserFavoritesDTO(
-        UserDTO user,
-        List<PlaceDTO> favorites
+@Builder(toBuilder = true)
+public record FavoriteResponseOut(
+        CreateUserResponseOut user,
+        List<PlaceResponseOut> favorites
 ) {
-    public UserFavoritesDTO(User user, List<Place> places) {
-        this(new UserDTO(user),
-                places.stream().map(PlaceDTO::new).collect(Collectors.toList()));
-    }
 }
