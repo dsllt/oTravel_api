@@ -15,7 +15,7 @@ CREATE TYPE food_type AS ENUM ('food', 'drink');
 CREATE TABLE menus (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name VARCHAR(200),
-  type FOOD_TYPE,
+  type VARCHAR(10),
   price DECIMAL(8,2),
   place_id UUID,
   created_at TIMESTAMPTZ DEFAULT NOW(),

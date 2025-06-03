@@ -1,8 +1,10 @@
-package com.dsllt.oTravel_api.infra.dto.menu;
+package com.dsllt.oTravel_api.infra.adapter.menu.in.web.model;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
-public record EditMenuDTO(
+@Builder(toBuilder = true)
+public record UpdateMenuRequestIn(
         @NotNull(message = "O nome deve ser definido.") String name,
         @NotNull(message = "O preço deve ser definido.") Double price
 ) {

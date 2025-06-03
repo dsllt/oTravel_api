@@ -1,12 +1,13 @@
-package com.dsllt.oTravel_api.infra.adapter.in.web.controller;
+package com.dsllt.oTravel_api.infra.adapter.menu.in.web;
 
-import com.dsllt.oTravel_api.domain.service.MenuService;
-import com.dsllt.oTravel_api.infra.dto.menu.CreateMenuDTO;
-import com.dsllt.oTravel_api.infra.dto.menu.EditMenuDTO;
-import com.dsllt.oTravel_api.infra.dto.menu.MenuDTO;
+import com.dsllt.oTravel_api.domain.menu.port.in.MenuUseCase;
+import com.dsllt.oTravel_api.infra.adapter.menu.in.web.mapper.MenuResponseOutMapper;
+import com.dsllt.oTravel_api.infra.adapter.menu.in.web.model.CreateMenuRequestIn;
+import com.dsllt.oTravel_api.infra.adapter.menu.in.web.model.UpdateMenuRequestIn;
+import com.dsllt.oTravel_api.infra.adapter.menu.in.web.model.MenuResponseOut;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,40 +15,42 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/menu")
 public class MenuController {
 
-    private final MenuService menuService;
-
-    @Autowired
-    public MenuController(MenuService menuService){
-        this.menuService = menuService;
-    }
+    private final MenuUseCase menuUseCase;
+    private final MenuResponseOutMapper menuResponseOutMapper;
 
     @PostMapping
-    public ResponseEntity<MenuDTO> create(@Valid @RequestBody CreateMenuDTO menu){
-        MenuDTO newMenu = menuService.save(menu);
+    public ResponseEntity<MenuResponseOut> create(@Valid @RequestBody CreateMenuRequestIn menu){
+        var newMenu = menuUseCase.save(menu);
         URI uri = URI.create("/menu/" + newMenu.id());
-        return ResponseEntity.created(uri).body(newMenu);
+        var response = menuResponseOutMapper.toMenuResponseOut(newMenu);
+        return ResponseEntity.created(uri).body(response);
     }
 
 
     @GetMapping("/{placeUuid}")
-    public ResponseEntity<List<MenuDTO>> getByPlaceId(@Nonnull @PathVariable UUID placeUuid){
-        List<MenuDTO> menus = menuService.getByPlaceId(placeUuid);
-        return ResponseEntity.ok().body(menus);
+    public ResponseEntity<List<MenuResponseOut>> getByPlaceId(@Nonnull @PathVariable UUID placeUuid){
+        var menus = menuUseCase.getByPlaceId(placeUuid);
+        var response = menus.stream()
+                .map(menuResponseOutMapper::toMenuResponseOut)
+                .toList();
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity<MenuDTO> update(@Nonnull @PathVariable Long itemId, @Valid @RequestBody EditMenuDTO menu){
-        MenuDTO updatedMenu = menuService.update(itemId, menu);
-        return ResponseEntity.ok().body(updatedMenu);
+    public ResponseEntity<MenuResponseOut> update(@Nonnull @PathVariable Long itemId, @Valid @RequestBody UpdateMenuRequestIn menu){
+        var updatedMenu = menuUseCase.update(itemId, menu);
+        var response = menuResponseOutMapper.toMenuResponseOut(updatedMenu);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> delete(@Nonnull @PathVariable Long itemId ){
-        menuService.delete(itemId);
+        menuUseCase.delete(itemId);
         return ResponseEntity.noContent().build();
     }
 }
