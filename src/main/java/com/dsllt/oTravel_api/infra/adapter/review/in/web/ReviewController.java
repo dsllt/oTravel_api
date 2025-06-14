@@ -1,9 +1,10 @@
-package com.dsllt.oTravel_api.infra.adapter.in.web.controller;
+package com.dsllt.oTravel_api.infra.adapter.review.in.web;
 
-import com.dsllt.oTravel_api.domain.service.ReviewService;
-import com.dsllt.oTravel_api.infra.dto.review.CreateReviewDTO;
-import com.dsllt.oTravel_api.infra.dto.review.ReviewDTO;
-import com.dsllt.oTravel_api.domain.model.review.Review;
+import com.dsllt.oTravel_api.domain.review.model.Review;
+import com.dsllt.oTravel_api.domain.review.service.ReviewService;
+import com.dsllt.oTravel_api.infra.adapter.review.in.web.model.CreateReviewRequestIn;
+import com.dsllt.oTravel_api.infra.adapter.review.in.web.model.ReviewResponse;
+import com.dsllt.oTravel_api.infra.adapter.review.in.web.model.UpdateReviewRequestIn;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/review")
 public class ReviewController {
+
     private final ReviewService reviewService;
 
     @Autowired
@@ -26,37 +27,34 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDTO> create(@RequestBody @Valid CreateReviewDTO createReviewDTO, UriComponentsBuilder uriComponentsBuilder){
-        Review savedReview = reviewService.save(createReviewDTO);
-
-        var uri = uriComponentsBuilder.path("/api/v1/review/{reviewUuid}").buildAndExpand(savedReview.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(ReviewDTO.from(savedReview));
+    public ResponseEntity<ReviewResponse> create(@RequestBody @Valid CreateReviewRequestIn createReviewDTO, UriComponentsBuilder uriComponentsBuilder) {
+        var savedReview = reviewService.save(createReviewDTO);
+        return ResponseEntity.status(201).body(savedReview);
     }
 
     @GetMapping
-    public ResponseEntity<List<ReviewDTO>> get(){
-        List<Review> reviews = reviewService.get();
-        List<ReviewDTO> reviewsDTO = reviews.stream().map(ReviewDTO::from).collect(Collectors.toList());
+    public ResponseEntity<List<ReviewResponse>> get() {
+        var reviews = reviewService.get();
 
-        return ResponseEntity.ok().body(reviewsDTO);
+        return ResponseEntity.ok().body(reviews);
     }
 
     @GetMapping("/{reviewUuid}")
-    public ResponseEntity<ReviewDTO> getReviewById(@Nonnull @PathVariable UUID reviewUuid){
-        Review review = reviewService.getReviewById(reviewUuid);
+    public ResponseEntity<ReviewResponse> getReviewById(@Nonnull @PathVariable UUID reviewUuid) {
+        var review = reviewService.getReviewById(reviewUuid);
 
-        return ResponseEntity.ok().body(ReviewDTO.from(review));
+        return ResponseEntity.ok().body(review);
     }
 
     @PutMapping("/{reviewUuid}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable String reviewUuid, @RequestBody CreateReviewDTO createReviewDTO){
-        Review updatedReview = reviewService.updateReview(UUID.fromString(reviewUuid), createReviewDTO);
+    public ResponseEntity<ReviewResponse> updateReview(@PathVariable String reviewUuid, @RequestBody UpdateReviewRequestIn updateReviewRequestIn) {
+        var updatedReview = reviewService.updateReview(UUID.fromString(reviewUuid), updateReviewRequestIn);
 
-        return ResponseEntity.ok().body(ReviewDTO.from(updatedReview));
+        return ResponseEntity.ok().body(updatedReview);
     }
+
     @DeleteMapping("/{reviewUuid}")
-    public ResponseEntity<Review> deleteReview(@PathVariable String reviewUuid){
+    public ResponseEntity<Review> deleteReview(@PathVariable String reviewUuid) {
         reviewService.deleteReview(UUID.fromString(reviewUuid));
 
         return ResponseEntity.noContent().build();

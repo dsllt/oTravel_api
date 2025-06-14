@@ -1,17 +1,12 @@
 package com.dsllt.oTravel_api.domain.favorite.service;
 
+import com.dsllt.oTravel_api.domain.favorite.model.Favorite;
 import com.dsllt.oTravel_api.domain.favorite.port.in.FavoriteUseCase;
 import com.dsllt.oTravel_api.domain.favorite.port.out.FavoritePort;
-import com.dsllt.oTravel_api.domain.favorite.model.Favorite;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.CreateFavoriteRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteByUser;
-import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteByUserResponseOut;
-import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteResponseOut;
-import com.dsllt.oTravel_api.infra.adapter.favorite.out.persistence.jpa.FavoriteJpaRepository;
-import com.dsllt.oTravel_api.infra.adapter.user.out.persistence.jpa.UserJpaRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

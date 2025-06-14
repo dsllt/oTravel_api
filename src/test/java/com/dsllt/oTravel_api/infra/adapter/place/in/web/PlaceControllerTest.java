@@ -66,6 +66,15 @@ class PlaceControllerTest {
                 """);
     }
 
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
+    }
+
     @Test
     @DisplayName("should throw exception when trying to register a place with invalid data")
     @WithMockUser(value = "john", authorities = "ROLE_USER")

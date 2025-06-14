@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.entity.review;
+package com.dsllt.oTravel_api.domain.review.model;
 
 import java.util.UUID;
 

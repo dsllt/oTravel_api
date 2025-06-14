@@ -5,6 +5,7 @@ import com.dsllt.oTravel_api.domain.user.model.UserRole;
 import com.dsllt.oTravel_api.infra.adapter.user.in.web.model.CreateUserRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.user.in.web.model.CreateUserResponseOut;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,15 @@ class UserControllerTest {
     ObjectMapper objectMapper;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM favorites");
+        jdbcTemplate.execute("DELETE FROM reviews");
+        jdbcTemplate.execute("DELETE FROM places");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM schedules");
+    }
 
     @Test
     @DisplayName("should not allow to access /user directly and throw exception with status code 403")

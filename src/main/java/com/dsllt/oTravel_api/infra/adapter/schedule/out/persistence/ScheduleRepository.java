@@ -59,7 +59,6 @@ public class ScheduleRepository implements CreateSchedulePort, GetSchedulePort, 
     @Override
     public List<Schedule> update(List<UpdateScheduleRequestIn> updateScheduleRequestIn) {
         updateScheduleRequestIn.forEach(schedule -> {
-            System.out.println("VALO" + scheduleJpaRepository.existsById(schedule.id()));
             if(!scheduleJpaRepository.existsById(schedule.id())){
                 throw new ObjectNotFoundException("Horários não encontrados.");
             }

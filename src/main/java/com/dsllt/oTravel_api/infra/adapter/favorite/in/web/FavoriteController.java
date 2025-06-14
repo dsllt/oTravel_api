@@ -6,7 +6,6 @@ import com.dsllt.oTravel_api.domain.favorite.service.FavoriteService;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.mapper.FavoriteResponseOutMapper;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.CreateFavoriteRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteByUser;
-import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteByUserResponseOut;
 import com.dsllt.oTravel_api.infra.adapter.favorite.in.web.model.FavoriteResponseOut;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/favorite")
 @AllArgsConstructor
-public class FavoriteRest {
+public class FavoriteController {
 
     private final FavoriteService favoriteService;
     private final FavoriteResponseOutMapper favoriteResponseOutMapper;

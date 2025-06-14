@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OTravelApiApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class FavoriteRestTest {
+class FavoriteControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

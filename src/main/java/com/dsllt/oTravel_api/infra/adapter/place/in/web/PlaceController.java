@@ -1,8 +1,6 @@
 package com.dsllt.oTravel_api.infra.adapter.place.in.web;
 
 import com.dsllt.oTravel_api.domain.place.service.PlaceService;
-import com.dsllt.oTravel_api.domain.model.CustomPage;
-import com.dsllt.oTravel_api.domain.place.model.PlaceCategory;
 import com.dsllt.oTravel_api.infra.adapter.place.in.web.mapper.PlaceResponseOutMapper;
 import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.CreatePlaceRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.PlaceResponseOut;
@@ -10,9 +8,6 @@ import com.dsllt.oTravel_api.infra.adapter.place.in.web.model.UpdatePlaceRequest
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;

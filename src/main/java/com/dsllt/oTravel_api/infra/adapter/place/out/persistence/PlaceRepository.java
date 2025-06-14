@@ -57,7 +57,6 @@ public class PlaceRepository implements PlacePort {
     public Place update(UUID placeUuid, UpdatePlaceRequestIn updatePlaceRequestIn) {
         var updatedPlaceData = validateUpdatePlaceData(placeUuid, updatePlaceRequestIn);
         var savedPlace = placeJpaRepository.save(updatedPlaceData);
-        System.out.println("UPDATE" + savedPlace);
         return placeMapper.toPlace(savedPlace);
     }
 

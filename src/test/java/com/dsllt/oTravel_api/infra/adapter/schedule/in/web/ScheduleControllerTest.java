@@ -1,13 +1,11 @@
 package com.dsllt.oTravel_api.infra.adapter.schedule.in.web;
 
 import com.dsllt.oTravel_api.app.OTravelApiApplication;
-import com.dsllt.oTravel_api.domain.model.schedule.WeekDay;
-import com.dsllt.oTravel_api.domain.service.ScheduleService;
+import com.dsllt.oTravel_api.domain.schedule.model.WeekDay;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.CreateScheduleRequestIn;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.ScheduleResponseOut;
 import com.dsllt.oTravel_api.infra.adapter.schedule.in.web.model.UpdateScheduleRequestIn;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,8 +38,6 @@ class ScheduleControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    private ScheduleService scheduleService;
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
 
@@ -55,7 +51,7 @@ class ScheduleControllerTest {
     }
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         jdbcTemplate.execute("""
                     INSERT INTO places (
                         id, name, image_url, description, address,
@@ -123,7 +119,6 @@ class ScheduleControllerTest {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
-
 
     @Test
     @DisplayName("Should list all week days with schedule hours saved")

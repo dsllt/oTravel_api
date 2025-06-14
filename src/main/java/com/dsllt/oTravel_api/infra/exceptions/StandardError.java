@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.exceptions;
+package com.dsllt.oTravel_api.infra.exceptions;
 
 import java.io.Serial;
 import java.io.Serializable;

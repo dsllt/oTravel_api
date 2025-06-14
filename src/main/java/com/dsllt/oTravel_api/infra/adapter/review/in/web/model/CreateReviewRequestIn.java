@@ -1,9 +1,13 @@
-package com.dsllt.oTravel_api.infra.dto.review;
+package com.dsllt.oTravel_api.infra.adapter.review.in.web.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
-public record CreateReviewDTO(
+import java.util.UUID;
+
+@Builder(toBuilder = true)
+public record CreateReviewRequestIn(
         @NotBlank(message = "A descrição deve ser definida.") String description,
         @NotNull(message = "Uma avaliação deve ser definida.") Double rating,
         @NotBlank(message = "O lugar deve ser definido.") String placeId,

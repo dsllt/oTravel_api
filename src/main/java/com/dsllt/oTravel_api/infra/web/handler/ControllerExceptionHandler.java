@@ -1,5 +1,6 @@
-package com.dsllt.oTravel_api.core.exceptions;
+package com.dsllt.oTravel_api.infra.web.handler;
 
+import com.dsllt.oTravel_api.infra.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

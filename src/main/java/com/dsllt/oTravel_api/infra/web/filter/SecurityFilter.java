@@ -1,6 +1,7 @@
-package com.dsllt.oTravel_api.infra.web.security;
+package com.dsllt.oTravel_api.infra.web.filter;
 
 import com.dsllt.oTravel_api.infra.adapter.user.out.persistence.jpa.UserJpaRepository;
+import com.dsllt.oTravel_api.infra.web.security.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

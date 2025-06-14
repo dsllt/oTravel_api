@@ -1,4 +1,4 @@
-package com.dsllt.oTravel_api.core.entity;
+package com.dsllt.oTravel_api.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
